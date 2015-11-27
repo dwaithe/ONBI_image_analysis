@@ -1,0 +1,72 @@
+<h1>MRF-based Mixture Model Segmentation</h1>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">In this exercise we segment single T1-weighted images with the FSL MRF-based segmentation tool (FAST) and look at how to quantify the volume of grey matter tissue.</p>
+
+<hr style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;" />
+<h2 style="color: rgb(0, 0, 0); font-family: Arial; line-height: normal;">Input Preparation - Brain Extraction</h2>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">To begin with we will prepare data for segmentation; this requires running FSL&#39;s Brain Extraction Tool (BET). In addition, just for this practical, we will also extract a small ROI containing a few central slices so that the segmentation only takes a minute to process the data, instead of 10 minutes for a full brain.</p>
+
+<pre style="margin-left: 5em; margin-right: 0em; padding: 1em; color: rgb(0, 0, 0); line-height: normal;">
+<span style="font-size:14px;">cd /home/bio/img_ana/fsl_course_data/seg_struc/fast</span>
+</pre>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Run BET on the input image&nbsp;<span style="font-size:14px;"><code>structural</code></span>&nbsp;to create&nbsp;<span style="font-size:14px;"><code>structural_brain</code></span>&nbsp;by doing:</p>
+
+<pre style="margin-left: 5em; margin-right: 0em; padding: 1em; color: rgb(0, 0, 0); line-height: normal;">
+<span style="font-size: 14px;">bet structural structural_brain </span></pre>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;"><b>Look at your data</b></p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">View the output to check that BET has worked OK:</p>
+
+<pre style="margin-left: 5em; margin-right: 0em; padding: 1em; color: rgb(0, 0, 0); line-height: normal;">
+<span style="font-size:14px;">fslview structural structural_brain -l Red &amp;</span></pre>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Close FSLView and create a cut-down version (containing a few central slices) of the brain-extracted image using the region-of-interest program&nbsp;<span style="font-size:14px;"><code>fslroi</code></span>&nbsp;. This will let you try out some of the FAST options without having to wait more than a minute each time.</p>
+
+<pre style="margin-left: 5em; margin-right: 0em; padding: 1em; color: rgb(0, 0, 0); line-height: normal;">
+<span style="font-size:14px;">fslroi structural_brain structural_brain_roi 55 150 15 200 65 5</span></pre>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Open&nbsp;<span style="font-size:14px;"><code>structural_brain_roi</code></span>&nbsp;in FSLView to see the cut-down image. See how few slices are left.</p>
+
+<hr style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;" />
+<h2 style="color: rgb(0, 0, 0); font-family: Arial; line-height: normal;">Segmentation of a T1-weighted Brain</h2>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Run FAST on&nbsp;<span style="font-size:14px;"><code>structural_brain_roi</code></span>. Use the GUI (<span style="font-size:14px;"><code>Fast</code></span>&nbsp;[or&nbsp;<span style="font-size:14px;"><code>Fast_gui</code></span>&nbsp;on a Mac]) with the default number of classes (3), turn on the<em> &quot;Binary segmentation output (one image per class)&quot;</em> and make sure the &quot;<em>Partial volume maps&quot;</em> are also selected. Once this is set up press &quot;Go&quot; for both - it should only take a minute to run.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">The outputs contain many different files, with initial binary segmentation results containing &quot;seg&quot; and the partial volume results containing &quot;pve&quot;. &nbsp;The main results of interest are the individual tissue classification maps: <span style="font-family:courier new,courier,monospace;">*_seg_0, *_seg_1</span> and <span style="font-family:courier new,courier,monospace;">*_seg_2</span>. &nbsp;We will start by looking at these binary segmentation results in FSLView. &nbsp;<span style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Note that you can tell FSLView what colourmaps to use from the command line like this</span>:&nbsp;</p>
+
+<pre style="margin-left: 5em; margin-right: 0em; padding: 1em; color: rgb(0, 0, 0); line-height: normal;">
+<span style="font-size: 14px;">fslview structural_brain_roi structural_brain_roi_seg_0 -l Green \
+      structural_brain_roi_seg_1 -l Blue \
+      structural_brain_roi_seg_2 -l Yellow &amp;</span></pre>
+
+<p><span style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Check how well you think the segmentation has performed by turning the overlays on and off, or changing the transparencies, and looking at the original intensity image. Keep this fslview window for comparison with the pve results below.&nbsp;</span></p>
+
+<h4 style="display: list-item; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Partial Volume Segmentation</h4>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Now let&#39;s look at the partial volume segmentations. View the different outputs in FSLView by first loading&nbsp;<span style="font-size:14px;"><code>structural_brain_roi</code></span>, then loading the PVE (Partial Volume Estimate) images as overlays. Use the following command to bring up a separate fslview window (which sets the colours and the intensity ranges):</p>
+
+<pre style="margin-left: 5em; margin-right: 0em; padding: 1em; color: rgb(0, 0, 0); line-height: normal;">
+<span style="font-size:14px;">fslview structural_brain_roi structural_brain_roi_pve_0 -l Green -b 0.5,1 \
+      structural_brain_roi_pve_1 -l Blue-Lightblue -b 0.5,1 \
+      structural_brain_roi_pve_2 -l Red-Yellow -b 0.5,1 &amp;</span></pre>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Identify which PVE component is the white matter. Choose a voxel on the border of the white matter and look at the value of the PVE there (the value is reported as the &quot;intensity&quot; in FSLView). &nbsp;Now look at the value&nbsp;<span style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">of the other two PVE components in this same voxel.&nbsp;</span>These values represent the volume fractions for the 3 classes (CSF, GM, WM) and should add up to one. Now pick a point in the middle of the white matter and look at the three values here.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Compare these to the binary segmentation outputs in the first FSLView window. &nbsp;</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;"><span style="color:#B22222;">Save two images (one showing the PVE and one showing the binary segmentation - both in the same slice) and indicate (with text or image annotations) where they differ.</span></p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">The PVE images are the most sensitive way to calculate the tissue volume which is present. For example, we can find the total GM volume with fslstats by doing:</p>
+
+<pre style="margin-left: 5em; margin-right: 0em; padding: 1em; color: rgb(0, 0, 0); line-height: normal;">
+<span style="font-size:14px;">fslstats structural_brain_roi_pve_1 -M -V
+</span></pre>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">The first number reported by&nbsp;<span style="font-size:14px;"><code>fslstats</code></span>&nbsp;gives the mean voxel GM PVE across the whole image and the third number gives the total volume of the image (in mm<sup>3</sup>), so multiplying these together gives the total GM volume in mm<sup>3</sup>&nbsp;(for more details on fslstats just type&nbsp;<span style="font-size:14px;"><code>fslstats</code></span>&nbsp;to see its usage description).</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;"><span style="color:#B22222;">Report the volume in <span style="font-family: Arial; font-size: medium; line-height: normal;">mm</span><sup>3</sup><span style="font-family: Arial; font-size: medium; line-height: normal;">&nbsp;for both the pve version (using the fslstats command shown above) and for the binary segmentation version (same command, but using the image structural_brain_roi_seg_1 instead). &nbsp;Why are these different?</span></span></p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">&nbsp;</p>

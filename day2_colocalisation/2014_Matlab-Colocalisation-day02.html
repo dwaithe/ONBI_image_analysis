@@ -1,0 +1,128 @@
+
+<HTML>
+<head>
+<style>
+body {
+	margin:20;
+    font-family: Arial, Helvetica, sans-serif;
+}
+p.todo{color:DarkRed;}
+p{
+background:#FFFFFF;
+	
+	font-size:small;
+	
+	color:Navy;
+	width:80%;
+
+}
+h3{color:Navy;}
+h4{color:DarkRed;}
+code{
+color: DarkSlateGray;
+font-size:20;
+}
+ol {
+	background:#F8F8FF	  2.3em 0 repeat-y;
+	overflow:auto;
+	font-size:small;
+	margin:0;
+	padding:1em 0 1em 2.8em;
+	color:gray;
+	width:90%;
+}
+#content ol li {
+	
+	font-size:small;
+	color:gray;
+}
+#content ol code {color:#DCDCDC;font-size:medium;}
+</style>
+
+
+<script type="text/javascript">
+<!--
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+    }
+//-->
+</script>
+
+</head>
+<body>
+
+<h1 >Colocalisation practical 2</h1>
+<p>The goal of this practical is for students to examine some of the practical considerations when implementing the dot product operation and when using the Pearson's test.</p>
+<p>Before getting started please make sure you do the following: <br>
+-	Open Matlab by typing &#39;Fiji&#39; into the terminal of the linux workstation. You can find the Terminal by searching for it or by the short-cut: &#39;Ctrl + Alt + T&#39;<br>
+- Goto the weblearn folder entitled: "Doctoral Training Centre (MPLS) Resources / Modules / 2014 / Michaelmas Term / Week 9 Foundations of Image Analysis / practicals / day2_registration" you will need the files in this folder.</p>
+
+<h3></h3>
+
+<p> We start with two lists of numbers (or two vectors or arrays as they are known). Please find the dot product of the two vectors. The dot product formula is a follows: <img src="../web_imgs/dotproduct.png"> <br> In Matlab there is more than one way of calculating the dot product. You can do it using a 'for loop', or through using vectorised notation.
+<ol start="1">
+<li><code>close all;</code></li>
+<li><code>clear all;</code></li>
+<li><code>a = [2,9,32,12,14,6,9,23,4,5,13,6,7,92,21,45];</code></li>
+<li><code>b = [9,12,92,23,13,5,7,23,6,4,1,7,23,14,6,9];</code></li>
+</ol>
+<p class="todo"> Please calculate the dot product of the vectors 'a' and 'b'. If you rearrange the numbers in 'b', what sequence will give the biggest magnitude when the dot product is again calculated with 'a'?</p>
+
+<p> Rather than arbitary lists of numbers the rest of this practical focuses on real image data. Note the way we import the tiffs which have multiple channels: </p>
+<ol start="1">
+<li><code>X = double(imread('path2folder/neuron.tif',1));</code></li>
+<li><code>Y = double(imread('path2folder/neuron.tif',4));</code></li>
+
+<li><code>subplot(1,2,1);</code></li>
+<li><code>imshow(X,[]);</code></li>
+<li><code>subplot(1,2,2);</code></li>
+<li><code>imshow(Y,[]);</code></li>
+</ol>
+<p> Next using the command the below command you can extract the Pearson's (r) test value for the two images directly to measure the colocalisation. Remember that '0' represents no colocalisation whereas '1.0' represents perfect colocalisation.</p>
+<ol start="9">
+<li><code>[r,p] = corrcoef(X,Y);</code></li>
+</ol>
+<p> It should be the same as when measured in ImageJ.</p>
+<p class="todo"> Your goal is to implement this calculation based on the below formula and submit the code as part of the assignment. <p>
+
+<p>Where 'n' is the number of pixels in each image, <img src="../web_imgs/eqn_Xi.gif"> and <img src="../web_imgs/eqn_Yi.gif">  refers to a specific pixel in either X or Y image array and <img src="../web_imgs/eqn_Xmu.gif"> and <img src="../web_imgs/eqn_Ymu.gif"> represent the average pixel value in these images. There is more than one way to do this You can either do it using 'for loops' or vectorised notation, use the approach you are most comfortable with. Make sure your algorithm gives the correct 'r' value (i.e. same as above).
+
+
+<p><img src="../web_imgs/eqn_full.gif"></p>
+
+<p> The Pearson's test can act as a similarity/cost function for assessing the alignment/registration of two images. What is the Pearson's  'r' value for the following image? Use your Pearson's implementation from above, or the pre-existing matlab routine if its not working.</p>
+
+<ol start="1">
+<li><code>close all;</code></li>
+<li><code>clear all;</code></li>
+<li><code>X = double(imread('path2folder/composite.tif',1));</code></li>
+<li><code>Y = double(imread('path2folder/composite.tif',2));</code></li>
+
+<li><code>subplot(1,2,1);</code></li>
+<li><code>imshow(X,[]);</code></li>
+<li><code>subplot(1,2,2);</code></li>
+<li><code>imshow(Y,[]);</code></li>
+
+
+</ol>
+
+<p class="todo"> Now as a crude registration algorithm we want to move one of our images relative to other and measure the similarity at each point (2 DOF, x and y).  The position (transformation) which gives us the highest similarity represents the best registration of our two images. Please submit your registered image and the x and y displacement which represent the transformation.</p>
+<input type="button" value="If you need more help click here." id="hideme" onclick="toggle_visibility('3');"></input>
+<div style = "display:none" id="3">
+<p> If you are really running into problems you can use the function below to find the point of maximum similarity. You can also visualise C using imshow. You will still need to find how many pixels displacement this represents in the x and y direction (e.g. how far the two images are offset.).</p>
+<ol start="4">
+<li><code>C = normxcorr2(X, Y);</code></li>
+<li><code>[maxval,idx]=max(C(:));</code></li>
+<li><code>[row,col]=ind2sub(size(C), idx);</code></li>
+</ol>
+</div>
+
+<h4> END of exercise</h4>
+<p>(c) Dominic Waithe 2014. University of Oxford.</p>
+</body>
+</html>
+

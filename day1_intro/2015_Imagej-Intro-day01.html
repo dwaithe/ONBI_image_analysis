@@ -1,0 +1,113 @@
+<style type="text/css">body {
+	margin:20;
+    font-family: Arial, Helvetica, sans-serif;
+}
+p.todo{color:DarkRed;}
+p{
+background:#FFFFFF;
+	
+	font-size:small;
+	
+	color:Navy;
+	width:80%;
+
+}
+h3{color:Navy;}
+h4{color:DarkRed;}
+code{
+color: DarkSlateGray;
+font-size:20;
+}
+ol {
+	background:#F8F8FF	  2.3em 0 repeat-y;
+	overflow:auto;
+	font-size:small;
+	margin:0;
+	padding:1em 0 1em 2.8em;
+	color:gray;
+	width:90%;
+}
+#content ol li {
+	
+	font-size:small;
+	color:gray;
+}
+#content ol code {color:#DCDCDC;font-size:medium;}
+</style>
+<script type="text/javascript">
+<!--
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+    }
+//-->
+</script>
+<h1>Introduction to Fiji practical 1</h1>
+
+
+
+<p>Before getting started please make sure you do the following:<br />
+- Open Fiji by typing &#39;Fiji&#39; into the terminal of the linux workstation. You can find the Terminal by searching for it or by the short-cut: &#39;Ctrl + Alt + T&#39;<br />
+- Goto the weblearn folder entitled: &quot;Doctoral Training Centre (MPLS) Resources / Modules / 2015 / Michaelmas Term / Week 9 - Foundations of Image Analysis / practicals / day1-intro&quot; you will need the files in this folder.<br/>
+- If you see any typos or want to recommend any improvements please paste the error or write the idea to: <a href="mailto:dominic.waithe@imm.ox.ac.uk?Subject=Suggestion/Found an error.">dominic.waithe@imm.ox.ac.uk</a>
+
+</p>
+
+<h3>1. Basic Image Characteristics.</h3>
+<img src="../web_imgs/introimg.png" width="400" />
+<p>Figure 1) The ImageJ/Fiji toolbar.</p>
+
+<p>1a) Start by opening the Fiji application. Ask for help if you cannot find it.</p>
+
+<p>1b) Now we want to open an image. Download the file &#39;Cell_colony.tif&#39; and save it to a convenient location. Goto this directory and drag the image named &#39;Cell_Colony.tif&#39; onto the Fiji toolbar (to the area just below the icons). The image should then open. If this fails you can open the image using the Fiji menu system. Goto File, then Open. (File-&gt;Open). From here find and open the images you downloaded before this practical.</p>
+
+<p>1c) Try zooming in on the Cell Colony image (Magnifying glass tool button + mouse, or the +/- keys). Do you notice anything odd or unnatural about the background? hint: this file was once a jpeg. Always keep your raw data and do not use image compression. Don&#39;t rely on compression formats for long-term storage.</p>
+
+<p>1d) Invert the Cell Colony image (Edit-&gt;Invert). Imagine for a moment that the distorted background is noise: now find one of the faint &#39;particles&#39; (actually a colony), and draw a line through it that is around 5-10x as long as the &#39;particle&#39; is wide. The line tool is the fifth one along the toolbar. You can plot a line profile using Analyze-&gt;Plot Profile. Get a feel for what the intensity of the &#39;signal&#39; is compared to the random intensity variations in the background.</p>
+
+<p>1e) Note that Image-&gt;Adjust-&gt;Brightness/Contrast cannot undo the damage of exceeding or not utilising your detector&#39;s dynamic range. Ideally you want to just about fill the range available - no more, no less. To visualise whether there is saturation or clipping of the image intensities, change the Look-Up-Table of the image. If you choose the HiLo LUT you can view saturation as red pixels in the image and clipping of low intensities as blue pixels. Image-&gt;Look Up Tables -&gt; HiLo. Don't worry if you don't see any difference right now. Next, experiment with the Brightness/Contrast settings as before and see what happens.</p>
+
+<h3>2. More about image display</h3>
+
+<p>2a) Multi-channel images differ from an RGB image in that each channel is a completely separate image. Fiji has a number of tools to manipulate channels, their display, and conversion to and from RGB images.Take a look at the Rat_Hippocampal_Neuron.tif sample image, this time opening Image-&gt;Color-&gt;Channels Tool.  In addition to the usual &#39;c&#39; slider under the image you now have a tick box for each channel that can be used to select a channel. You also have a choice box at the top used to set the viewing mode, and a More &gt;&gt; choice box at the bottom. Look at the options in the More &gt;&gt; menu, and try changing the colour of the channel you are looking at (the Merge &amp; Split Channels and Convert to RGB options are the same as those in the Color menu). Note that the choice of colour is up to you and not dependent on the wavelength of the channel for instance. Often grayscale is the best choice for analysis, and remember that the human eye is sensitive to Green&gt;Red&gt;Blue in that order.</p>
+
+<p>2b) Now try changing the Color view mode to Composite. You should see all channels, and have the option of turning each one on/off (by check/uncheck). If you move the channel slider now, notice that the colour of the window border and info string at the top left change to match the channel you have selected. Now try changing to the second channel (&#39;green&#39;) and adjusting the brightness/contrast and you should see that the histogram is also coloured to reflect the channel colour you have set. Try Convert to RGB on your composite view. Notice that the R,G,B values you see when you mouseover the image are difficult to interpret. If you now goto More-&gt;Split Channels, the new images are divided into red/green/blue channels, notice the image information is now merged into these colour channels and so it unanalyzable.</p>
+
+<p>Note) In general, it is good practice to preserve separate channels for processing and analysis until the final stages of producing a figure.</p>
+
+<p>2c) Look-Up-Tables (LUTs) map intensity values to a displayed colour. Open the Blobs.tif image. Goto Image-&gt;Lookup Tables-&gt;Invert LUT. What values do you see when you mouseover the dark and bright regions of the image? Is this what you expected? Have a look at Image-&gt;Color-&gt;Show LUT and then repeat the procedure on the un-inverted image and you should be able to see what is going on.</p>
+<button onclick="toggle_visibility(1)">Click for more info.</button>
+
+<div id="1" style="display:none">
+<p class="todo">The image &#39;Blobs.tif&#39; has an inverted LUT and so low intensity values are shown brightly on the screen and high intensity values are shown as dim/dark pixel values on the screen. To invert the LUT goto Image-&gt;Lookup Tables-&gt;Invert LUT. Remember the pixel values don&#39;t actually change when you alter the LUT, the change is only visual.</p>
+</div>
+
+<p>2d) The LUT for an image can be changed by selecting one of the Lookup Tables in  Image-&gt;Lookup Tables. Select &#39;Grays&#39; and see what happens. Now that you have the default LUT you should find the intensities values in the image make more sense. Try some of the more colourful schemes: Fire, Rainbow RGB etc. and examine how the colour changes with intensity using &#39;Show LUT&#39; to change the image LUT or &#39;Edit LUT&#39; to visualise the individual colours assigned at each level. They can be helpful for making small changes in intensity obvious, and extremely useful for visualizing measurements such as FRET efficiency or fluorescence lifetime. Using &#39;Edit LUT&#39; try making your own LUT that shows the Blobs' centre, boundary and background in different colours.</p>
+<button onclick="toggle_visibility(2)">Click for example application.</button>
+
+<div id="2" style="display:none">
+<p class="todo">The image &#39;Blobs.tif&#39; has an inverted LUT and so low intensity values are shown brightly on the screen and high intensity values are shown as dim/dark pixel values on the screen. To invert the LUT goto Image-&gt;Lookup Tables-&gt;Invert LUT. You might do this to visualise a particular structure which occupies low intensities and so is hard to distinguish normally.</p>
+<img src="../web_imgs/LUTcomparison.png" />
+<p>Figure 1) Comparison of neurites with different LUTs. The information in each image is the same but the clusters are much more visible (to us, humans) in the image on the right, which has the &#39;Rainbow-RGB&#39; LUT.</p>
+</div>
+
+<h3>Thresholding and binary operations.</h3>
+
+<p>3a) The image histogram is an important concept to understand. Open the image &#39;cell_fluorescent.tif&#39;. Select the whole image, Edit-&gt;Selection-&gt;Select All. Analyze-&gt;Histogram. The plot displays the number of pixels in each intensity bin (256 bins is the default). If you click the list button you can examine the raw numbers. Notice the statistics displayed underneath, including minimum and maximum values, standard deviation, mean etc.</p>
+
+<p>3b) Select a dim region of the image using the Oval selection tool and repeat the histogram analysis. Now select a region entirely within the cell body and look at the histogram. Finally, examine the histogram for a region that is half cell body, half dim region. Can you explain what you see? This can be used as the basis for distinguishing the two regions, using a thresholding method.</p>
+
+<p>3c) Segmentation is a means of separating image pixels into different subsets. The most common method to segment an image, is to apply a threshold. Open the cell_fluorescent.tif sample image. Convert the image to single 8-bit channel by clicking Image-&gt;Type-&gt;8-bit.We only want to apply a threshold in one-colour channel to simplify the thresholding. Now we want to duplicate this image so we can experiment with different algorithms Image-&gt;Duplicate. Next open the threshold dialog Image-&gt;Adjust-&gt;Threshold. Move the threshold slide-bars under the histogram and notice the effect. Try and find a level with segments the blobs from their background and click apply. You have now segmented an image.</p>
+
+<p>3d) Go back to the 8-bit version of the image and duplicate a fresh copy. Now once again goto the threshold dialog Image-&gt;Adjust-&gt;Threshold. This time rather than manually changing the slider, click on the box which says Default and then click &#39;Otsu&#39;. This is an automatic thresholding algorithm which attempts to find a threshold value which best segments the image population in the intensity histogram. Click apply to see the output binary image. Algorithms such as &#39;Otsu&#39; can be used to automatically segment images without human interaction. <a href="http://en.wikipedia.org/wiki/Otsu%27s_method">Find out more about Otsu.</a></p>
+
+<p>3e) Go back to the 8-bit &#39;cell_fluorescent.tif&#39; image. Goto the threshold dialog Image-&gt;Adjust-&gt;Threshold. Choose an arbitrary threshold. Now we are going to manipulate the resultant binary image using binary morphological operations. Goto Process-&gt;Binary and click erode. What do you notice? Goto Edit-&gt;Invert and then click Process-&gt;Binary-&gt;erode once again. What do you notice? Create a fresh binary image. Try some of the other options. Invert the image and see how the operation changes its effect.</p>
+
+<h4>If you get to end before the allotted time, please experiment with the other functions in the various Fiji/Imagej menus.</h4>
+
+<h4>END of exercise</h4>
+
+<p>(c) Dominic Waithe, Graeme Ball and David Pinto 2015. University of Oxford.</p>

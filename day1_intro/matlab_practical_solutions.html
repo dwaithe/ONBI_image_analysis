@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+  <head>
+    <title>Introduction to Image Analysis with Matlab</title>
+    <meta charset="UTF-8">
+    <meta name="author" content="Carnë Draug/David Miguel Susano Pinto">
+    <style>
+      body{
+        max-width: 880px;
+        margin: 0 auto;
+        float: none;
+        line-height: 150%;
+        color: Navy;
+      }
+      p.todo {
+        color: DarkRed;
+      }
+     div.tell_me_more {
+        padding: 20px;
+        background-color: LemonChiffon;
+        font-size: small;
+      }
+      p {
+      }
+      h1 {
+        text-align: center;
+      }
+      h2 {
+        color: DarkRed;
+      }
+      h3 {
+        color: DarkRed;
+      }
+      h4 {
+        color: DarkRed;
+      }
+      pre {
+        color: DarkSlateGray;
+        font-size: small;
+        line-height: 120%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Solutions to introduction to Image Analysis with Matlab</h1>
+
+    <p>
+      There are comments on the source (HTML) of the exercises which explain
+      the logic of the exercises.  You can still go back to them (Ctr+U to see
+      the HTML source on Firefox).
+    </p>
+
+    <h3>Reading images</h3>
+    <p class="todo">
+      Exercise: write a Matlab function that reads an entire TIFF file.
+      Test your function with "mri-stack.tif" and "cell-lsm.tif".
+      Do not add a new matrix to the end of the image being read.  Initialise
+      an empty matrix first.
+    </p>
+
+    <p>
+      TIFF are a pretty flexible format.  While this can be a good thing, it
+      can also lead to many problems, which lead it to the nick "Thousand of
+      Incompatible File Formats" (TIFF).  Writing a function that is able to
+      read any TIFF is well beyond the scope of this exercise.  The following
+      function will read the majority of TIFFs you will face in microscopy.
+    </p>
+
+    <pre><code>
+function read = read_simple_multipage_tiffs (fname)
+
+  s = imfinfo (fname);
+  depth = s(1).BitDepth;
+  switch (depth)
+    case  8, t = 'uint8';
+    case 16, t = 'uint16';
+    otherwise
+      error ('we are not ready to handle this');
+  end
+
+  rows = s(1).Height;
+  cols = s(1).Width;
+  sppx = s(1).SamplesPerPixel;
+
+  if (   ~ all (cols  == [s.Width]) ...
+      || ~ all (rows  == [s.Height]) ...
+      || ~ all (sppx  == [s.SamplesPerPixel]) ...
+      || ~ all (depth == [s.BitDepth]))
+    error ('pages are not all of same size');
+  end
+
+  read = zeros (rows, cols, sppx, numel (s), t);
+  for idx = 1:numel (s)
+    read(:,:,:,idx) = imread (fname, 'Index', idx);
+  end
+
+end
+    </code></pre>
+
+    <p>
+      Note the extra input check at thre start which will throw a meaningful error
+      at you.  This prevents the program to continue execution and fail later
+      which can either lead to an error being throw somewhere else or worse,
+      silently return an incorrect result.
+    </p>
+
+    <p>
+      There is one important things to take from this, checking for the
+      correct data type.  In here we cover unsigned 8 and 16 bit images.
+      If not specified, zeros() defaults to precision double which not only
+      takes 8 or 4 times more space respectively, it also has a different
+      representation in Matlab (display range of double and single precision
+      images in Matlab is [0 1]).  Try the following and see what would
+      happen to the display when using double:
+    </p>
+
+    <pre><code>
+original = read_simple_multipage_tiffs ('mri-stack.tif');
+montage (original)
+montage (double (original))
+    </code></pre>
+
+    <p>
+      The 'cell-lsm.tif' file have the first 10 frames of an old LSM file (the
+      original was over 300MB on size).  It was meant as an example of how hard
+      reading a file can sometimes be, and a warning against proprietary file
+      formats.  Sometimes, you just have to inspect each page, make sense
+      what is what, and write something to handle the special case. The
+      following code should read it correctly:
+    </p>
+
+    <pre><code>
+function read = read_sample_lsm4 (fname)
+
+  s = imfinfo (fname);
+  rows = s(1).Height;
+  cols = s(1).Width;
+  nimg = numel (s) / 2;
+
+  %% only the first page is grayscale, all the others seem to be RGB
+  %% but only the red channel has any actual data
+  read = zeros (rows, cols, 1, nimg, 'uint8');
+  read(:,:,1,1) = imread (fname, 'Index', 1); % first is grayscale
+  for idx = 2:nimg
+    %% this could be a oneliner if only we could do "lhv = foo()(idx)"
+    tmp = imread (fname, 'Index', idx*2-1);
+    read(:,:,:,idx) = tmp(:,:,1);
+  end
+
+end
+    </code></pre>
+
+    <h3>Displaying images</h3>
+    <p class="todo">
+      Exercise: open the "eze.tif" in Matlab and Fiji. Display it in Matlab
+      as it appears in Fiji.
+    </p>
+
+    <p>
+      This image can be read easily with the function written on the previous
+      exercise.  However, displaying of it will show only a black image (with
+      a faint grey halo on the first image).
+    </p>
+
+    <pre><code>
+im = read_simple_multipage_tiffs ('eze.tif');
+montage (im)
+    </code></pre>
+
+    <p>
+      The reason for this has to do with the dynamic range of the image.  Its
+      class is of 'uint16' which means its values can range between [0 65535],
+      and Matlab will display the image using the entire range of its class.
+      On the other hand, Fiji will use the maximum and minimum intensity of
+      the image effectively stretching its histogram for display purposes
+      only.  Finally, Fiji also attributes a colour to each of the channels
+      while Matlab does not.  This can be easily done by removing the singleton
+      dimension which effectively creates a RGB image.
+    </p>
+
+    <pre><code>
+im = read_simple_multipage_tiffs ('eze.tif');
+for i=1:3
+  im(:,:,:,i) = imadjust (im(:,:,:,i));
+end
+imshow (squeeze (im))
+    </code></pre>
+
+    <p>
+      The issue of not using the entire dynamic range of the image is very
+      common.  There are two main causes this:
+    </p>
+    <ol>
+      <li>
+        While image files are mostly 8 or 16 bit, the cameras used are of
+        much less precision, often 12 or 14.  A 14 bit camera can only make
+        use of 1/4 of the dynamic range provided by a 16 bit file
+        (2^16 = 655536 while 2^14 = 16384).  This shows the importance of
+        metadata (without knowing details of the camera, the image may actually
+        be saturated).
+      </li>
+      <li>
+        Most biological signals will be very weak.  Light not only damages
+        cells it also bleaches the fluorophores which means that imaging is
+        often done on the worst possible conditions (from the imaging point
+        of view).  Microscopy data tens to be noisy because of this.
+      </li>
+    </ol>
+
+    <p class="todo">
+      Exercise: open "confocal-series.tif" in Matlab and experiment
+      with montage().
+    </p>
+
+    <pre><code>
+im = read_simple_multipage_tiffs ('confocal-series.tif');
+montage (im)
+montage (im(:,:,:,1:2:end))
+montage (im(:,:,:,2:2:end))
+
+s = size (im);
+rgb = reshape (im, [s(1) s(2) 2 s(4)/2]);
+rgb(:,:,3,:) = 0;
+montage (rgb)
+    </pre></code>
+
+    <h3>Intensity projections</h3>
+    <p class="todo">
+      Exercise: open "post-FancyFRAP.lsm" and do a maximum intensity projection
+      on the Z dimension.  Isolate the projection for the 3rd stage location
+      and save both of its channels on a separate file.
+      You should probably use Fiji for guidance on how to
+      handle the image.  How many dimensions does the image have? Why is Fiji
+      not capable to handle it perfectly? Why is it so hard to do it in Matlab
+      without Fiji?
+    </p>
+
+    <p>
+      Once again, this file requires some work to read it correctly. Inspection
+      of the struct array returned by imfinfo(), together with reading single
+      pages at a time, will help a lot.  There is one image, two channels
+      per page, interleaved with a thumbnail. It can be read with the following
+      function:
+    </p>
+
+    <pre><code>
+function read = read_2_channel_lsm (fname)
+
+  s = imfinfo (fname);
+  rows = s(1).Height;
+  cols = s(1).Width;
+  nimg = numel (s) /2;
+
+  read = zeros (rows, cols, 2, nimg, 'uint8');
+  for idx = 1:nimg
+    read(:,:,:,idx) = imread (fname, 'Index', idx*2 -1);
+  end
+
+end
+    </code></pre>
+
+    <p>
+      However, reshaping of the image into a multi-dimensional matrix that
+      is useful requires working with Fiji.  Comparing the image read by Fiji
+      with single pages read in Matlab, one can reshape it into a six
+      dimensional matrix, rows, columns, two channels, five Z slice, six time
+      points, and 7 stage location (individual cells).  Extracting the 3rd
+      cell then becomes a simple matter of careful indexing.
+    </p>
+
+    <pre><code>
+im = read_2_channel_lsm ('post-FancyFRAP.lsm');
+s = size (im);
+imr = reshape (im, [s(1) s(2) 2 5 6 7]);
+cell3 = imr(:,:,:,:,:,3);
+    </code></pre>
+
+    <p>
+      To perform maximum intensity projection, max() accepts an optional
+      dimension argument:
+    </p>
+
+    <pre><code>
+cell3_max = max (cell3, [], 4); % note how the 4th dimension becomes a singleton
+imshow (cell3_max(:,:,1,:,1), []) % display first time point first channel
+imshow (cell3_max(:,:,2,:,1), []) % display first time point second channel
+montage (cell3_max(:,:,2,:)) % display time series of second channel
+    </code></pre>
+
+    <p>
+      Neither Matlab or Fiji are capable of handling this data perfectly.
+      Matlab is capable of handling matrices with an arbitrary number of
+      dimensions but lacks the information to "organise" the matrix on its
+      own. Thus we rely on Fiji to do it.  However, Fiji is limited to 5
+      dimensions and so concatenates the cell and time in the same dimension
+      (scroll bar).  This makes it harder to compare all cells in the first
+      time point.  The main lesson to take home from this, is to always count
+      on having more dimensions one day.  Don't assume that you won't need
+      more dimensions later.  Also, mathematical operations will often work
+      fine for an arbitrary number of dimensions anyway, and your code will be
+      a lot more elegant.
+    </p>
+
+    <p class="todo">
+      Exercise: open "prefrap-nih.tif" and make a mean intensity projection
+      of the image.  Discuss the change of image quality.
+    </p>
+
+    <pre><code>
+im = read_simple_multipage_tiffs ('prefrap-nih.tif');
+imshow (mean (im, 4)) % WRONG - will display all white
+imshow (mean (im, 4, 'native'))
+
+%% compare noise levels of the averaged image with first 5 frames
+montage (im(:,:,:,1:5))
+    </code></pre>
+
+    <p>
+      For time lapse experiments with very short time intervals, there is
+      a lot of redundancy on the signal which can be used to remove noise.
+      The simplest way to make use of it is by averaging the images.
+    </p>
+
+    <p>
+      Note the use of the "native" option to mean. This is because mean()
+      will return an image of class double which has different display
+      rules in Matlab than the input (which was uint8).
+    </p>
+
+    <h3>Filtering</h3>
+    <p class="todo">
+      Exercise: open "prefrap-nih.tif", create a mask for the nucleus,
+      and plot its mean intensity over time.
+    </p>
+
+    <pre><code>
+im = read_simple_multipage_tiffs ('prefrap-nih.tif');
+m = mean (im, 4, 'native');
+mask1 = im2bw (m, graythresh (m));
+imshow (mask1)
+mask1 = imfill (mask1, 'holes');
+mask1 = imclearborder (mask1);
+imshow (mask1)
+mask = repmat (mask1, [1 1 1 size(im, 4)]);
+    </code></pre>
+
+    <p>
+      This first part uses the mean intensity projection (denoised), to create
+      a mask for the image.  There's a bit of another cell on the bottom left
+      corner of the image and a few holes on the central nucleus.  These are
+      short work by imfill() and imclearborder().
+    </p>
+
+    <pre><code>
+intensities = reshape (im(mask), [nnz(mask1) size(im, 4)]);
+plot (mean (intensities))
+    </code></pre>
+
+    <p>
+      Use of binary indexing is essential when analysing objects in Matlab.
+      Here we extract the intensity values for all the pixels in the mask for
+      all time points.  Because these are equal for each time point, we can
+      simply reshape it into a 2D matrix and compute the mean for each column.
+      Plotting this data, shows the mean intensity of the nucleus reducing
+      over time (which is due to photobleaching).
+    </p>
+
+    <p class="todo">
+      Exercise: retrieve the maximum intensity projection you made of
+      position 3 from "post-FancyFRAP.lsm".  Apply a gaussian filter.
+      Retrieve the original image, and apply a 2D gaussian filter to each
+      of the Z slices and then perform the maximum intensity projection.
+      Compare and comment.
+    </p>
+
+    <pre><code>
+f = fspecial ('gaussian', 10);
+cell3_max_filter = imfilter (cell3_max, f);
+cell3_filter = imfilter (cell3, f);
+cell3_filter_max = max (cell3_filter, [], 4);
+figure(1); imshow (cell3_max_filter(:,:,1,:,1), [])
+figure(2); imshow (cell3_filter_max(:,:,1,:,1), [])
+    </code></pre>
+
+    <p>
+      A gaussian filter can be used to denoise image by averaging the value
+      of its pixel with its neighbours.  A maximum intensity projection is
+      handy to see 3D objectes in a plane but brings up the highest noise.
+      By performing the filter before the Z projection, its contrast is better
+      since there is less noise being projected.
+    </p>
+
+    <p class="todo">
+      Exercise: count the number of cells in "t450fg.tif". The image is a
+      fixed sample stained with DAPI.
+    </p>
+
+    <p>
+      There are many many ways to do this.  A simple way is to perform a
+      gaussian filter to remove most of the noise. We are not really
+      interested on tiny details, only on being able to count cells.
+    </p>
+
+    <pre><code>
+a = imread ('t450fg.tif');
+af = imfilter (a, fspecial ('gaussian', 10));
+bw = im2bw (af, graythresh (af));
+bwed = imdilate (imerode (bw, ones (3)), ones (3));
+bwedf = imfill (bwed, 'holes');
+cc = bwareaopen (bwedf, 5000);
+[~, n] = bwlabel (cc);
+    </code></pre>
+
+    <h3>Other notes</h3>
+    <p>
+      Throughout the exercises I constantly make sure to conserve the class
+      of the image.  I believe this to be a good rule and keeps memory
+      consumption low (very important when dealing with massive multi
+      dimensional images - a uint8 takes 8 times less space than a double).
+      Others have different opinion on the subject, the main reason being
+      that carelessness can lead to incorrect results due to truncation or
+      overflow of integers in intermediary results.  If you want to work
+      with images in floating point precision, consider instead use of single
+      instead and to work on the range of values [0 1] by converting the
+      data with im2single().  This will cause less surprises when displaying
+      or writing the images from Matlab.
+    </p>
+
+
+    <h3>Extra</h3>
+    <p class="todo">
+      A very interesting exercise is to implement the dilation and erosion
+      operations for binary images using only conv2.
+    </p>
+
+    <p>
+      The following functions will not perform faster than the builtin
+      imdilate and imerode but can be used in the absence of the Image
+      Processing toolbox (which is a separate product from Matlab). Most
+      important, understanding how they work is dependent on understanding
+      well convolution, as well as the dilation and erosion operations.
+    </p>
+
+    <pre><code>
+function d = dilate (im, se)
+  d = convn (im, se, 'same') > 0;
+end
+
+function e = erode (im, se)
+  se = reshape (se(end:-1:1), size (se));
+  e = convn (im, se, 'same') == nnz (se);
+end
+    </pre></code>
+
+    <p>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" />
+      </a>
+    </p>
+  </body>
+</html>
+

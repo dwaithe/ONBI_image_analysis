@@ -1,0 +1,198 @@
+<h1 style="color: rgb(0, 0, 0); font-family: Arial; line-height: normal;">Intro to FSLView</h1>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">The aim of this practical is to become familiar with both the viewing tool (FSLView) that is part of the FSL software package and the different types of images that are acquired with MRI. This tool can view a wide range of images (e.g. structural images, functional images, diffusion images and statistical results) in many different ways, and these are demonstrated by a range of example data in the self-paced exercises below. &nbsp;All the data here is in the NIFTI format, which the standard format for neuroimaging data.</p>
+
+<hr />
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">FSLView is a simple viewer for 3D and 4D data. It does not perform any processing or analysis of images (that is done by separate tools in FSL). FSLView has the following features:</p>
+
+<ul style="margin-top: 0px; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">
+	<li>&quot;ortho&quot; (3 orthogonal slicings) and &quot;lightbox&quot; (multiple slices) view options</li>
+	<li>multiple simultaneous views (ortho and/or lightbox)</li>
+	<li>time-series display (via graphs or movie loops)</li>
+	<li>multiple semi-transparent colour-overlays</li>
+	<li>simple freehand image editing (mask drawing)</li>
+	<li>3D rendering (see later)</li>
+</ul>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">FSLView by defaults opens in the&nbsp;<code>ortho</code>&nbsp;view mode; if you add image filenames on the command line (after typing&nbsp;<code>fslview</code>) it will load them all automatically; however, all images must have the same spatial matrix dimensions (numbers of voxels in x, y and z) as each other. They don&#39;t have to have the same number of timepoints.</p>
+
+<hr style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;" />
+<h2 style="color: rgb(0, 0, 0); font-family: Arial; line-height: normal;">Setting up FSL</h2>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; line-height: normal;"><span style="font-size:16px;">As this is the first time that you have used FSL, you need to set up some environment variables. &nbsp;This only needs to be done once. &nbsp;To do the initial setup just run the following command in a terminal:</span></p>
+
+<pre style="margin-left: 5em; margin-right: 0em; padding: 1em; color: rgb(0, 0, 0); line-height: normal;">
+<span style="font-size: 16px;">/auto/dtcscratch/fsl-setup.sh</span></pre>
+
+<h2 style="color: rgb(0, 0, 0); font-family: Arial; line-height: normal;">Find the practical data</h2>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">We have installed a range of brain data in the directory /home/bio/img_ana/fsl_course_data</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Open a command terminal and type:</p>
+
+<pre style="margin-left: 5em; margin-right: 0em; padding: 1em; color: rgb(0, 0, 0); line-height: normal;">
+<span style="font-size:16px;">cd /home/bio/img_ana/fsl_course_data/intro
+ls</span></pre>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">The&nbsp;<span style="font-size:14px;"><code>ls</code></span>&nbsp;command gives you a list of the files in this directory.</p>
+
+<hr style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;" />
+<h2 style="color: rgb(0, 0, 0); font-family: Arial; line-height: normal;">Starting FSLView</h2>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Start FSLView by typing</p>
+
+<pre style="margin-left: 5em; margin-right: 0em; padding: 1em; color: rgb(0, 0, 0); line-height: normal;">
+<span style="font-size:16px;">fslview &amp; </span></pre>
+
+<div class="u-aside" style="margin-left: auto; margin-right: 0em; width: 1067.1875px; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">
+<p>The&nbsp;<code>&amp;</code>&nbsp;means that the program you asked for (<span style="font-size:14px;"><code>fslview</code></span>) runs in the background in the terminal (or shell), and you can keep typing and running other commands while&nbsp;<span style="font-size:14px;"><code>fslview</code></span>&nbsp;continues to run. If you had not made&nbsp;<span style="font-size:14px;"><code>fslview</code></span>&nbsp;run in the background (using the&nbsp;<code>&amp;</code>) then you would not be able to get anything to run in that terminal until you killed&nbsp;<span style="font-size:14px;"><code>fslview</code></span>&nbsp;(although you could still type things, but they would not run).</p>
+
+<p>Other useful Unix info:</p>
+
+<ul style="margin-top: 0px;">
+	<li>To kill a job that is running (in the &quot;foreground&quot;) in the terminal just type&nbsp;<span style="font-size:14px;"><code>control-c</code></span></li>
+	<li>To get a list of jobs running the background, type&nbsp;<span style="font-size:14px;"><code>jobs</code></span></li>
+	<li>To bring something from running in the background to running in the foreground, type&nbsp;<span style="font-size:14px;"><code>fg</code></span>&nbsp;if it is the last job that was started.</li>
+	<li>To force a job that is already running (in the foreground) to be in the background, type control-z and then&nbsp;<span style="font-size:14px;"><code>bg</code></span>. Note that&nbsp;<span style="font-size:14px;"><code>control-z</code></span>&nbsp;on its own will give you the terminal prompt back but the job will be sleeping, not running in the background, until you do&nbsp;<span style="font-size:14px;"><code>bg</code></span>.</li>
+</ul>
+</div>
+
+<h2 style="color: rgb(0, 0, 0); font-family: Arial; line-height: normal;">Basic Image Viewing</h2>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">In FSLView, load in the image&nbsp;<span style="font-size:14px;"><code>example_func.nii.gz</code></span>, by pressing&nbsp;<span style="font-size:14px;"><code>File &gt; Open</code></span>&nbsp;and selecting the image (note that in Ubuntu the menu is hidden by default - but can be expanded by moving your cursor to the top left of the bar at the top of the screen). &nbsp;The image that you are loading here is a single 3D image from a functional MRI acquisition (which normally contains lots of 3D images acquired over time - taken all together these are referred to as a 4D image).</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Hold the mouse button down in one of the view panels and move it around - see how various things update as you do so:</p>
+
+<ul style="margin-top: 0px; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">
+	<li>the other panels update their view</li>
+	<li>the cursor&#39;s position in both voxel and mm co-ordinates gets updated</li>
+	<li>the image intensity at the cursor is shown</li>
+</ul>
+
+<p class="centred" style="text-align: center; margin-left: auto; margin-right: auto; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Mode Toolbar:&nbsp;<img alt="FSLView Mode Toolbar" src="http://fsl.fmrib.ox.ac.uk/fslcourse/lectures/practicals/intro/mode.png" style="border-style: hidden; vertical-align: middle;" /></p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Now click several times on the small upwards arrow (on some computers the arrows are replaced with a small &quot;+&quot; and &quot;-&quot;) that is part of the scale control&nbsp;<b>[1]</b>&nbsp;(currently showing &quot;100%&quot;). This is one way of controlling the zoom. If you click on the icon of a hand&nbsp;<b>[3]</b>&nbsp;you can drag a view around. You can reset the view settings by pressing on the button with the arrow on top of the magnifying glass&nbsp;<b>[6]</b>. You can also set the field-of-view of a panel (i.e., zoom in) by clicking on the button with the magnifying glass&nbsp;<b>[5]</b>, and then click-and-dragging the mouse in a view panel. (If you have a 3-button mouse, you can also access &quot;drag&quot; and &quot;field-of-view&quot; modes by using middle and right mouse buttons, respectively.)</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Return to &quot;normal view mode&quot; (as opposed to &quot;move&quot; or &quot;zoom&quot; mode) by clicking on the button with the small cross&nbsp;<b>[2]</b>.</p>
+
+<p class="centred" style="text-align: center; margin-left: auto; margin-right: auto; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Bricon Toolbar:&nbsp;<img alt="FSLView Brightness/Contrast toolbar" src="http://fsl.fmrib.ox.ac.uk/fslcourse/lectures/practicals/intro/briconwidget.png" style="border-style: hidden; vertical-align: middle;" /></p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">You can control the brightness and contrast either by using the wheels/sliders&nbsp;<b>[3]</b>&nbsp;near the &quot;brightness/contrast&quot; button&nbsp;<b>[2]</b>&nbsp;(this button allows you to reset the brightness and contrast to their initial settings, although for some images these may be poor because some images specify this range in their header information, and can do it badly). You can also control the intensity display range explicitly by typing numbers into the Min and Max boxes&nbsp;<b>[1]</b>. Have a play with these controls.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Open a&nbsp;<span style="font-size:14px;"><code>lightbox</code></span>&nbsp;view using&nbsp;<span style="font-size:14px;"><code>Tools &gt; Lightbox</code></span>. If you drag the mouse around in the viewer you can see that the cursor position is linked in the two views of the data. This is particularly useful when you have several images loaded in at the same time (you can view each in a separate view window and move around all of them simultaneously).</p>
+
+<h2 style="color: rgb(0, 0, 0); font-family: Arial; line-height: normal;">Unlinking Cursors</h2>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">You can &quot;unlink&quot; the cursor position between the two views (it is linked by default). Go into one of the views, e.g., the lightbox view, and press the &quot;tools&quot; icon&nbsp;<img alt="FSLView Tools Icon" src="http://fsl.fmrib.ox.ac.uk/fslcourse/lectures/practicals/intro/tools_icon.png" style="border-style: hidden; vertical-align: middle;" />&nbsp;that enables various miscellaneous settings to be changed. Turn off&nbsp;<span style="font-size:14px;"><code>Globally &gt; Link &gt; Location</code></span>&nbsp;and press&nbsp;<span style="font-size:14px;"><code>Ok</code></span>. You will now find that this view (the lightbox view) is no longer linked to the &quot;Global&quot; cursor position, and you can move the cursor independently (in this view) from where it is in the other views.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">If you increase the % zoom in the lightbox view sufficiently, you will get a scrollbar to let you control which slices you are viewing. Kill the lightbox view now (click on the small red circle or X at the very top of the view) and expand the ortho view back to full size.</p>
+
+<p class="centred" style="text-align: center; margin-left: auto; margin-right: auto; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;"><a id="ltb">Layer Toolbar:</a>&nbsp;<img alt="FSLView Layer Toolbar Image" src="http://fsl.fmrib.ox.ac.uk/fslcourse/lectures/practicals/intro/layer-tool.gif" style="border-style: hidden; vertical-align: middle;" /></p>
+
+<h2 style="color: rgb(0, 0, 0); font-family: Arial; line-height: normal;">Viewing Multiple Images</h2>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Now load in a second image (<span style="font-size:14px;"><code>thresh_zstat1</code></span>) using&nbsp;<span style="font-size:14px;"><code>File &gt; Add</code></span>. This image (<span style="font-size:14px;"><code>thresh_zstat1</code></span>) is a thresholded FMRI activation image. In the bottom-right panel is a list of loaded images - the layer toolbar. Images can be turned on and off by double-clicking in that list&nbsp;<b>[7]</b>&nbsp;(or by highlighting the image in the list&nbsp;<b>[8]&nbsp;</b>and then clicking on the checkbox by the small eye icon&nbsp;<b>[1]</b>&nbsp;at the bottom). Once highlighted in the image list, an image&#39;s transparency can be changed with the slider&nbsp;<b>[3]</b>&nbsp;(at the bottom of the box); reduce the &quot;solidness&quot; of the stats overlay image.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Also, when an image in the image list is highlighted:</p>
+
+<ul style="margin-top: 0px; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">
+	<li>You can click on the&nbsp;<img alt="(i)" src="http://fsl.fmrib.ox.ac.uk/fslcourse/lectures/practicals/intro/fslview-i.png" style="border-style: hidden;" />&nbsp;button&nbsp;<b>[6]</b>&nbsp;and change the image&#39;s colour display scheme (LUT - look-up-table), change the name of the displayed image (useful if images from different directories have the same name), or see/change some other basic image information.</li>
+	<li>You can set the brightness/contrast settings for that image in the bricon-toolbar, as described above. If you change the&nbsp;<span style="font-size:14px;"><code>Min</code></span>&nbsp;display intensity for any image, then any voxels with intensities lower than the&nbsp;<span style="font-size:14px;"><code>Min</code></span>&nbsp;will be made invisible, so that you can see through to the image(s) lower in the list. Try changing the&nbsp;<span style="font-size:14px;"><code>Min</code></span>&nbsp;to 4, for&nbsp;<span style="font-size:14px;"><code>thresh_zstat1</code></span>, to see this effect.</li>
+	<li>You can view voxel intensities for that image in the normal place (to the right of the voxel co-ordinate displays).</li>
+	<li>You can change the order of images in the overlay list using the far-right arrow buttons to move any highlighted image up and down in the list.</li>
+</ul>
+
+<p class="centred" style="text-align: center; margin-left: auto; margin-right: auto; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">View Toolbar:&nbsp;<img alt="FSLView View Toolbar Image" src="http://fsl.fmrib.ox.ac.uk/fslcourse/lectures/practicals/intro/view-tool.png" style="border-style: hidden; vertical-align: middle;" /></p>
+
+<h2 style="color: rgb(0, 0, 0); font-family: Arial; line-height: normal;">Viewing Timeseries (4D Images)</h2>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Now kill the ortho viewer; all loaded images are deleted from FSLView once the last view is closed. Now load in&nbsp;<span style="font-size:14px;"><code>filtered_func_data</code></span>, a 4D FMRI time series. Watch this as a movie by pressing the film-strip button&nbsp;<b>[1]</b>&nbsp;that becomes clickable when a 4D file is highlighted in the overlay list. You will see the time-counter (&quot;Volume&quot;) scrolling through the different time-point values. Note that whilst the movie is running you can still change the cursor position. Stop the movie by pressing the movie button again.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Press the switch layout button&nbsp;<b>[3]</b>&nbsp;several times to see how you can select different layouts for the ortho viewer.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Open a single-slice view with&nbsp;<span style="font-size:14px;"><code>Tools &gt; Single</code></span>&nbsp;to see how you can get a larger view of a single slice. Now the switch layout button&nbsp;<b>[3]</b>&nbsp;lets you select which orientation you want the single slice view to be in. Turn on the&nbsp;<span style="font-size:14px;"><code>Slice roll mode</code></span>&nbsp;<b>[2]</b>&nbsp;to auto-scroll through all slices. Kill the single-slice view.</p>
+
+<p class="centred" style="text-align: center; margin-left: auto; margin-right: auto; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Timeseries Toolbar:&nbsp;<img alt="FSLView Timeseries Toolbar Image" src="http://fsl.fmrib.ox.ac.uk/fslcourse/lectures/practicals/intro/timeseries-tool.gif" style="border-style: hidden; vertical-align: middle;" /></p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Re-load the&nbsp;<span style="font-size:14px;"><code>thresh_zstat1</code></span>&nbsp;stats overlay image back in. Open a timeseries graph view with&nbsp;<span style="font-size:14px;"><code>Tools &gt; Timeseries</code></span>&nbsp;(you will need to have the 4D dataset highlighted in the image list for this option to be active). Move around with the mouse button held down until you are on a &quot;highly activated&quot; voxel. Press the + button&nbsp;<b>[1]</b>&nbsp;in the timeseries view and that voxel&#39;s timeseries gets saved in the display. You can add more timeseries by moving to new voxels and pressing + again.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">If you have used &quot;+&quot; to add several timeseries to the display they may all have quite different mean values, making comparison difficult - press the &quot;-&mu;&quot; button&nbsp;<b>[3]</b>&nbsp;to demean all viewed timeseries. You can highlight individual timeseries by clicking on them (a highlighted timeseries changes colour). Once you have turned on demeaning you can also choose to turn on the &quot;%&quot; button&nbsp;<b>[4]</b>, which shows the y-axis as a % of the mean level (i.e. in this case you&#39;re now seeing the BOLD % signal change values).</p>
+
+<p class="centred" style="text-align: center; margin-left: auto; margin-right: auto; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Histogram Toolbar:&nbsp;<img alt="FSLView Histogram Toolbar Image" src="http://fsl.fmrib.ox.ac.uk/fslcourse/lectures/practicals/intro/histogram-tool.gif" style="border-style: hidden; vertical-align: middle;" /></p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Highlight&nbsp;<span style="font-size:14px;"><code>filtered_func_data</code></span>&nbsp;and press&nbsp;<span style="font-size:14px;"><code>Tools &gt; Image histogram</code></span>&nbsp;to view a basic histogram. A histogram plots the distribution of intensities in the image; image intensity is on the x axis and the number of voxels with that intensity is on the y axis. You can click in the histogram to view exact values. To get an expanded view, click on the button with the magnifying glass&nbsp;<b>[1]</b>&nbsp;and then click-and-drag in the histogram (click again on the button&nbsp;<b>[1]</b>&nbsp;to un-expand). Click on the toolbox button&nbsp;<b>[3]</b>&nbsp;to get more histogram options (such as logarithmic axes and zero suppression).</p>
+
+<h2 style="color: rgb(0, 0, 0); font-family: Arial; line-height: normal;">Viewing FMRI Analysis Results</h2>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">We&#39;ll now look at some more advanced FMRI analysis features in FSLView. Kill FSLView and in the terminal type:</p>
+
+<pre style="margin-left: 5em; margin-right: 0em; padding: 1em; color: rgb(0, 0, 0); line-height: normal;">
+<span style="font-size:14px;">cd /home/bio/img_ana/fsl_course_data/fmri/ptt/at/at_left.feat
+fslview filtered_func_data thresh_zstat1 thresh_zstat2</span></pre>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">You are now in an example FMRI analysis (FEAT) output directory. The image names on the&nbsp;<span style="font-size:14px;"><code>fslview</code></span>&nbsp;command line tell FSLView to load in each of these images, to save you having to load them in by hand in the GUI. Because FSLView detects that you are in a FEAT directory it automatically turns on timeseries viewing. You might want to resize the outer FSLView window (make it wider) and then auto-resize the inner windows with&nbsp;<span style="font-size:14px;"><code>Window &gt; Tile</code></span>.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">One of the nice features when in FSLView&#39;s &quot;FEAT mode&quot; (FEAT is the tool in FSL that does analysis of functional MRI data) is that you can see a plot of the fitted timeseries model versus the data. In the timeseries view change&nbsp;<span style="font-size:14px;"><code>No model</code></span>&nbsp;to&nbsp;<code><span style="font-size:14px;">Full model</span> <span style="font-size:14px;">only</span></code>&nbsp;(if it isn&#39;t already showing this). Now when you click around in the image you can see not just the data timeseries but also the fitted model.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">This FEAT output directory already contains versions of some of the images upsampled to &quot;standard space&quot; - the common image space that multisubject analyses are carried out in, which allows us to interact with the FSL atlases. Kill fslview and run:</p>
+
+<pre style="margin-left: 5em; margin-right: 0em; padding: 1em; color: rgb(0, 0, 0); line-height: normal;">
+<span style="font-size:14px;">fslview reg_standard/reg/highres.nii.gz reg_standard/stats/cope1 \
+  -l Blue-Lightblue -b 100,400</span></pre>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">The options tell FSLView what colourmap to use for the FMRI activation BOLD effect image&nbsp;<span style="font-size:14px;"><code>cope1</code></span>, and what intensity display range.</p>
+
+<div class="u-aside" style="margin-left: auto; margin-right: 0em; width: 1067.1875px; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">
+<p>The &#39;\&#39; in the command above allows you to split a long command line to make it easier to read</p>
+</div>
+
+<h2 style="color: rgb(0, 0, 0); font-family: Arial; line-height: normal;">Viewing Atlases</h2>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Because these images are in standard space (an agreed template coordinate system used in the neuroimaging community) we can turn on the atlas tools with&nbsp;<span style="font-size:14px;"><code>Tools &gt; Toolbars &gt; Atlas Tools</code></span>. Now as you click around in the image you can see reporting of the probability of being in different brain structures. The atlases that are turned on by default are the Harvard-Oxford cortical and subcortical atlases. These are formed by averaging careful hand segmentations of structural images of many separate individuals. Find the thalamus (left or right); you can see that there is activation here.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Try the other atlases (press the&nbsp;<span style="font-size:14px;"><code>Atlases...</code></span>&nbsp;button and turn on other atlases). In particular, the Juelich atlas is very complementary to the Harvard-Oxford atlases (being derived from post-mortem histological segmentations), as are the JHU atlases (being derived from diffusion MRI data, which highlights structure in the white matter portions of the brain). You might want to resize the different FSLView sub-panels to increase the size of the Atlas reporting space (in general you do this by dragging around the edges of the different FSLView sub-panels).</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">You can turn on summary images of atlases by double-clicking on the name inside the&nbsp;<span style="font-size:14px;"><code>Atlases...</code></span>&nbsp;popup window and then pressing&nbsp;<code>OK</code>; have a play with that.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Finally, bring up the&nbsp;<span style="font-size:14px;"><code>Structures...</code></span>&nbsp;window, select an atlas (such as the Juelich atlas), turn on the two tickboxes, and then click around in the list of structures....for those atlases which are probabilistic, this shows a single structure at a time, with the full probability information shown as a gradation of colour.</p>
+
+<hr />
+<h1 style="color: rgb(0, 0, 0); font-family: Arial; line-height: normal;">FSLView - 3D Mode (optional - time permitting)</h1>
+
+<pre style="margin-left: 5em; margin-right: 0em; padding: 1em; color: rgb(0, 0, 0); line-height: normal;">
+<span style="font-size:14px;">cd /home/bio/img_ana/fsl_course_data/intro</span></pre>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">FSLView can render multiple images as 3D views (rendered as solid or cut-away objects) but it is important to run things in the correct order, as described here. We will run an example that renders a standard brain image and a white-matter tractography result, but other types of images could be used instead - the principles and steps are the same.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Start FSLview and load in the brain-extracted MNI152 2mm standard image: click on the menu item&nbsp;<span style="font-size:14px;"><code>File &gt; Open Standard</code></span>, select&nbsp;<span style="font-size:14px;"><code>MNI152_T1_2mm_brain</code></span>&nbsp;and click on&nbsp;<span style="font-size:14px;"><code>Open</code></span>. Next open an image depicting the cortico-spinal tract:&nbsp;<span style="font-size:14px;"><code>File &gt; Add...</code></span>, select&nbsp;<span style="font-size:14px;"><code>cst2standard_73_46_26</code></span>&nbsp;and click&nbsp;<span style="font-size:14px;"><code>Open</code></span>.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Select&nbsp;<span style="font-size:14px;"><code>cst2standard_73_46_26</code></span>&nbsp;in the&nbsp;<span style="font-size:14px;"><code>Overlay settings</code></span>&nbsp;panel (layer toolbar) and click on the&nbsp;<img alt="(i)" src="http://fsl.fmrib.ox.ac.uk/fslcourse/lectures/practicals/intro/fslview-i.png" style="border-style: hidden;" />&nbsp;button (layer toolbar&nbsp;<b>[6]</b>) to bring up the&nbsp;<span style="font-size:14px;"><code>Overlay Information Dialog</code></span>. Change&nbsp;<span style="font-size:14px;"><code>Image Type</code></span>&nbsp;to&nbsp;<code><span style="font-size:14px;">Statistic</span>&nbsp;</code>and select the&nbsp;<span style="font-size:14px;"><code>Blue-Lightblue</code></span>&nbsp;lookup table then click on&nbsp;<span style="font-size:14px;"><code>Close</code></span>.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">The&nbsp;<span style="font-size:14px;"><code>cst2standard_73_46_26</code></span>&nbsp;image shows the course of a tract up from the spine through the brain-stem to the cortex. Explore the image by moving the cursor around trying to trace the path of the tract.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Now switch to 3D mode: select the&nbsp;<span style="font-size:14px;"><code>Tools &gt; 3D Viewer</code></span>&nbsp;menu item.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Improve the segmentation of the &quot;pial&quot; (outer-brain) surface by changing the threshold control&nbsp;<span class="red" style="color: red;">(1)</span>. Edit the value until you get a good representation of the surface&nbsp;<em>Hint: try 5500</em>.</p>
+
+<p class="centred" style="text-align: center; margin-left: auto; margin-right: auto; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;"><img alt="FSLView 3D Toolbar" src="http://fsl.fmrib.ox.ac.uk/fslcourse/lectures/practicals/intro/gui3d.png" style="border-style: hidden;" /></p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Turn on clipping by checking the&nbsp;<span style="font-size:14px;"><code>Clipping</code></span>&nbsp;checkbox&nbsp;<span class="red" style="color: red;">(2)</span>. Part of the volume should now be cut away to reveal the structural image&#39;s internal detail along with some blue areas which show the location of the tract.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">In 3D mode the bricon control effectively selects the threshold value for segmentation of the surface of a statistic image, so select the&nbsp;<span style="font-size:14px;"><code>cst2standard_73_46_26</code></span>&nbsp;image and change the low threshold&nbsp;<span class="red" style="color: red;">(3)</span>&nbsp;to 1. You should now be able to see the tract.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Using the left mouse button rotate the image around. The right and middle mouse buttons can also be used to scale and translate the image. Pressing&nbsp;<span style="font-size:14px;"><code>r</code></span>&nbsp;at any time will rescale and translate the scene back into the viewport.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Press&nbsp;<span style="font-size:14px;"><code>b</code></span>. A box will appear which can be modified to change the extent of the clipping volume. Use the mouse to grab the control points and resize, translate (middle control) and, in the case of dragging the sides, rotate the box. Press&nbsp;<span style="font-size:14px;"><code>b</code></span>&nbsp;again to turn off the box.</p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;"><em>Open the&nbsp;<a href="http://fsl.fmrib.ox.ac.uk/fsl/fslview/">manual</a>&nbsp;to find out more about the various keyboard controls.</em></p>
+
+<p style="color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">Currently not all FSLview controls behave consistently in 3D mode, e.g., the lookuptables and image types for a given layer can&#39;t be modified after the start of a 3D viewer&nbsp;<em>(as a work-around close the current 3D view, make your changes, then start a fresh 3D view)</em>.</p>
+
+<p class="centred" style="text-align: center; margin-left: auto; margin-right: auto; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;"><img alt="FSLView 3D rendering" src="http://fsl.fmrib.ox.ac.uk/fslcourse/lectures/practicals/intro/screenshot50.png" style="border-style: hidden;" /></p>
+
+<hr />
+<p class="centred" style="text-align: center; margin-left: auto; margin-right: auto; color: rgb(0, 0, 0); font-family: Arial; font-size: medium; line-height: normal;">&nbsp;</p>
+
+<h1>That&#39;s all folks</h1>
+
+<p>&nbsp;</p>

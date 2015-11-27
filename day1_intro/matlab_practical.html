@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+  <head>
+    <title>Introduction to Image Analysis with Matlab</title>
+    <meta charset="UTF-8">
+    <meta name="author" content="Carnë Draug/David Miguel Susano Pinto">
+    <style>
+      body{
+        max-width: 880px;
+        margin: 0 auto;
+        float: none;
+        line-height: 150%;
+        color: Navy;
+      }
+      p.todo {
+        color: DarkRed;
+      }
+     div.tell_me_more {
+        padding: 20px;
+        background-color: LemonChiffon;
+        font-size: small;
+      }
+      p {
+      }
+      h1 {
+        text-align: center;
+      }
+      h2 {
+        color: DarkRed;
+      }
+      h3 {
+        color: DarkRed;
+      }
+      h4 {
+        color: DarkRed;
+      }
+      code {
+        color: DarkSlateGray;
+        font-size: 20;
+      }
+      ol {
+        background: #F8F8FF 2.3em 0 repeat-y;
+        overflow: auto;
+        font-size: small;
+        margin: 0;
+        padding: 1em 0 1em 2.8em;
+        color: gray;
+        width: 90%;
+      }
+      #content ol li {
+        color: gray;
+      }
+      #content ol code {
+        color: #DCDCDC;
+      }
+    </style>
+
+    <script type="text/javascript">
+      function toggle_visibility(id) {
+         var e = document.getElementById(id);
+         if(e.style.display == 'block')
+            e.style.display = 'none';
+         else
+            e.style.display = 'block';
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>Introduction to Image Analysis with Matlab</h1>
+    <p>
+      It is assumed that students at this point already had some exposure to the
+      basics of Matlab.  The goal of this practical is to explore its use for
+      image processing.  It is pretty much a quick guide through Matlab's
+      Image Processing Toolbox.
+    </p>
+
+    <p>
+      For starters, download all the images to your system, you will need them
+      for the exercises.  They can be found on the weblearn folder for this
+      practical.
+    </p>
+
+    <h2>Reading and displaying images</h2>
+    <p>
+      Invariably, the very first part of image analysis is reading the image.
+      One would think that something so essential would not be a problem but
+      unfortunately that is not the case, the medical image formats are many
+      and varied.  We will be dealing only with TIFF, the de-facto standard
+      in biological sciences, which as proved itself to be extremely flexible.
+    </p>
+
+    <input type="button" value="Tell me more" onclick="toggle_visibility('bioformats');" />
+    <div class="tell_me_more" style="display:none" id="bioformats">
+      <p>
+        <a href="http://www.openmicroscopy.org/site/products/bio-formats">Bioformats</a>
+        is a library which aims at solving the problem of far too many formats.
+        It is the library used by Fiji to read images (this may change in the
+        future for ScifIO though).  Bioformats also has a Matlab interface but
+        there is not enough time to cover it.  However, keep it mind for future
+        use.  Bioformats also handles a very important aspect of image which is
+        often overlooked, that of metadata.  It is excellent at extracting
+        metadata from image files.
+      </p>
+    </div>
+
+    <h3>Multi-page TIFF</h3>
+    <p>
+      Multi-dimensional images are common in research.  Usually these are
+      time-lapse, Z-stacks, or multiple wavelength images.  TIFFs store these
+      images via multiple pages, each page being a single 2 dimensional image.
+      To read them in Matlab, imread() accepts an optional 'Index' argument.
+      The imfinfo() function can be helpful to find out details of a page
+      before reading it.
+    </p>
+
+    <p class="todo">
+      Exercise: write a Matlab function that reads an entire TIFF file.
+      Test your function with "mri-stack.tif" and "cell-lsm.tif".
+      Do not add a new matrix to the end of the image being read.  Initialise
+      an empty matrix first.
+    </p>
+    <!-- 
+      Pitfall 1: initialising the matrix with ones() or zeros() creates a
+        matrix of doubles.  Since the image is integer, it gets casted to
+        double invisibly.  When displayed it will appear all white.  When
+        creating the matrix they should use the correct type (double takes
+        8 times more memory than uint8)
+      Pitfall 2: "cell-lsm.tif" is a cropped LSM file. LSM files are TIFF
+        files whose real data is interleaved with thumbnails.  Students
+        should catch this and either skip the thumbnails or rethrow a more
+        appropriate error.
+    -->
+
+    <div class="tell_me_more" style="display:none" id="double">
+      <p>
+        Do your images appear as black after reading?  Matlab display ranges
+        are different between classes.  For double, those values are in the 
+      black after reading the 
+      </p>
+    </div>
+
+    <input type="button" value="Tell me more" onclick="toggle_visibility('tiff_performance');" />
+    <div class="tell_me_more" style="display:none" id="tiff_performance">
+      <p>
+        When a TIFF file has thousands of pages (you will be surprised at how
+        common this is), Matlab interface to read them is pretty horrid.  The
+        reason is that the location of each page in a TIFF is defined at the
+        end of the previous page and since Matlab only reads one page per call
+        to imread(), each page you read requires transversing the file from
+        the start until the required page.  As workaround, in recent version
+        of Matlab you can pass the struct returned from imfinfo() as argument
+        to imread().  This structure has a list of file positions.
+      </p>
+      <p>
+        Even newer Matlab versions seem to perform some sort of black magic
+        to read them faster, your mileage may vary.  There is also the
+        possibility to use Matlab's Tiff class (a wrapper to libtiff).
+      </p>
+    </div>
+
+    <h3>Display</h3>
+
+    <p class="todo">
+      Exercise: open the "eze.tif" in Matlab and Fiji. Display it in Matlab
+      as it appears in Fiji.
+    </p>
+    <!--
+      Pitfall 1: images are uint16 and only using the lower range of values.
+        If they don't use imshow (..., []) or imadjust they won't see
+        anything (all black).
+      Pitfall 2: they are only grayscale for Matlab, they will need to
+        understand how RGB work in Matlab to have them colored.
+      This is also a good place for them to check imhist().
+    -->
+
+    <p class="todo">
+      Exercise: open "confocal-series.tif" in Matlab and experiment with
+      montage().
+    </p>
+    <!--
+      Montage is a really useful function that is rarely used.  They may have
+      to play with reshape a bit to get it appear as they would like.
+    -->
+
+    <h3>Intensity projections</h3>
+
+    <p>
+      The reason to image a Z stack is not always to study the Z distribution
+      but simply because the object of interest is at different distances.
+      In such cases, it is common to perform a maximum intensity projection
+      which greatly simplifies things.
+    </p>
+    <p class="todo">
+      Exercise: open "post-FancyFRAP.lsm" and do a maximum intensity projection
+      on the Z dimension.  Isolate the projection for the 3rd stage location
+      and save both of its channels on a separate file.
+      You should probably use Fiji for guidance on how to
+      handle the image.  How many dimensions does the image have? Why is Fiji
+      not capable to handle it perfectly? Why is it so hard to do it in Matlab
+      without Fiji?
+    </p>
+    <!--
+      They should be able to do this in one line, using reshape to get things
+      in the right dimension and specify DIM to max().  But to read it properly
+      we need Fiji because Fiji uses bioformats which knows what is Z and
+      wavelength.  However, Fiji is limited to 5 dimensions and our data has 6.
+    -->
+
+    <p class="todo">
+      Exercise: open "prefrap-nih.tif" and make a mean intensity projection
+      of the image.  Discuss the change of image quality.
+    </p>
+    <!--
+      Mean intensity projection and removal of noise.
+    -->
+
+    <!--
+      I cut out this exercise because I'm not sure if there is enough time.
+
+      Learn how to use permute(), there is nothing special about X and Y, they
+      are just another dimension like the others.
+
+      <p class="todo">
+        Exercise: make a figure of the orthogonal (XZ and YZ) views through
+        the XY center of the "beads.tif" image.
+      </p>
+    -->
+
+    <h3>Filtering</h3>
+
+    <p class="todo">
+      Exercise: open "prefrap-nih.tif", create a mask for the nucleus,
+      and plot its mean intensity over time.
+    </p>
+    <!--
+      A simple exercise which requires threshold (graythresh), some
+      filtering to clean rough borders, and logical indexing.
+    -->
+
+    <p class="todo">
+      Exercise: retrieve the maximum intensity projection you made of
+      position 3 from "post-FancyFRAP.lsm".  Apply a gaussian filter.
+      Retrieve the original image, and apply a 2D gaussian filter to each
+      of the Z slices and then perform the maximum intensity projection.
+      Compare and comment.
+    </p>
+    <!--
+      Making the filtering before the maximum intensity projection increases
+      contrast since it removes most of the noise.  Maximum projection projects
+      the noise.
+    -->
+
+
+    <p class="todo">
+      Exercise: count the number of cells in "t450fg.tif". The image is a
+      fixed sample stained with DAPI.
+    </p>
+    <!--
+      Something that works:
+
+        a = imread ('t450fg.tif');
+        af = imfilter (a, fspecial ('gaussian', 10));
+        bw = im2bw (af, graythresh (af));
+        bwed = imdilate (imerode (bw, ones (3)), ones (3));
+        bwedf = imfill (bwed, 'holes');
+        cc = bwareaopen (bwedf, 5000);
+        [~, n] = bwlabel (cc);
+    -->
+
+    <input type="button" value="Teach me more" onclick="toggle_visibility('conv_dilate');" />
+    <div class="tell_me_more" style="display:none" id="conv_dilate">
+      <p>
+        A very interesting exercise is to implement the dilation and erosion
+        operations for binary images using only conv2.
+      </p>
+    </div>
+
+
+    <h3>The end</h3>
+
+    <input type="button" value="Teach me more" onclick="toggle_visibility('not_matlab');" />
+    <div class="tell_me_more" style="display:none" id="not_matlab">
+      <p>
+        There are programming languages out there, you are not limited to use
+        Matlab.  You won't have a variable viewer or a built-in a text editor,
+        but those are features of an IDE, not a programming language. The most
+        useful languages to know in the field of image analysis are, in no
+        particular order: Python, Java, C++, and C.
+      </p>
+    </div>
+    <p>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" />
+      </a>
+    </p>
+  </body>
+</html>
+
