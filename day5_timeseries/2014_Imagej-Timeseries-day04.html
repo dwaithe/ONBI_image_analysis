@@ -1,0 +1,100 @@
+
+<HTML>
+<head>
+<style>
+body {
+	margin:20;
+    font-family: Arial, Helvetica, sans-serif;
+}
+p.todo{color:DarkRed;}
+p{
+background:#FFFFFF;
+	
+	font-size:small;
+	
+	color:Navy;
+	width:80%;
+
+}
+h3{color:Navy;}
+h4{color:DarkRed;}
+code{
+color: DarkSlateGray;
+font-size:20;
+}
+ol {
+	background:#F8F8FF	  2.3em 0 repeat-y;
+	overflow:auto;
+	font-size:small;
+	margin:0;
+	padding:1em 0 1em 2.8em;
+	color:gray;
+	width:90%;
+}
+#content ol li {
+	
+	font-size:small;
+	color:gray;
+}
+#content ol code {color:#DCDCDC;font-size:medium;}
+</style>
+
+
+<script type="text/javascript">
+<!--
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+    }
+//-->
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+<body>
+
+<h1 >Time-series practical 1</h1>
+<p>The goal of this practical is for students to examine some of the practical considerations when time-series analysis.</p>
+<p>Before getting started please make sure you do the following: <br>
+-	Open Fiji by typing &#39;Fiji&#39; into the terminal of the linux workstation. You can find the Terminal by searching for it or by the short-cut: &#39;Ctrl + Alt + T&#39;<br>
+- Goto the weblearn folder entitled: "Doctoral Training Centre (MPLS) Resources / Modules / 2014 / Michaelmas Term / Week 9 - Foundations of Image Analysis / practicals / day4_colocalisation" you will need the files in this folder.</p>
+
+<h3 >Time-series A</h3>
+<p>1a) In this practical we are going to visualise and analyse a time-series movie of some cells.
+
+Open the image file 'timeseries.tif'
+
+You should have an image which looks like this:</p>
+<img src="../web_imgs/timeImage.png" width=200>
+
+
+<p>1b) If you press the play button the timeseries will play through the image file displaying the images in sequence. Another way to navigate the movie is to use the slider also located at the bottom of the image. If you move the slider at the bottom of the image sequence you should notice that some of the cells in the image stay stationary with respect to the others.</p>
+
+<p>1c) We want to estimate how many cells are stationary in this image over the whole time-sequence. We want to compare it to the approximate number of total cells in the image sequence as well. One way to visualise the cells, which are not moving, is to Z-project the stack. Z-project can be applied in several ways. If you go to 'Images->Stacks->Z-project' you can apply one of the following options: 'Max Intensity', 'Min Intensity', 'Average Intensity', 'Sum Slices'. Use 'Sum Slices' and apply it to the image sequence. 'Sum Slices' takes the sum of all the pixel values in the stack at each pixel (x, y) and flattens it into a single image represenations. If cells are stationary in the image sequence they will appear brightly in this sum image as their lack of movement results in a large sum in these pixels. Other pixels only have cells located there transiently and so have lesser sum overall.</p>
+
+<p class="todo">Question) Submit your image to your report. Use a colourful Lookup-Table.</p>
+
+<p> 1d) Count the cells. To do this, use the 'SUM_timeseries.tif' image, convert to '8-bit'  (Image->Type->8-bit) and use the 'Find Maxima' plugin (Process->Find Maxima).  Set the 'NoiseTolerance' parameter to '100' and click 'Preview point Selection'. Make a note of the number of maxima. Make sure you converted to '8-bit' otherwise the 'Noise Tolerance' parameter will not be appropriate and the points of the image won't represent the stationary cells.
+
+<p class="todo">Question) Do the points which have been highlighted represent stationary cells ? Investigate the image sequence by eye and make sure this is the case. How many cells according to the 'Find Maxima' plugin appear to be stationary?</p>
+
+<p>1e) Next we want to estimate the number of cells in the first frame of the timeseries. Click the image sequence and move the slider position at the bottom to the first frame. Use the plugin 'Find Maxima' again and estimate how many cells are present in total. </p>
+
+<p class="todo">Question) How many cells were there in total? What percentage of cells were moving as opposed to stationary?</p>
+
+
+
+
+
+<h4> END of exercise</h4>
+<p>(c) Dominic Waithe 2014. University of Oxford.</p>
+</body>
+</html>
+

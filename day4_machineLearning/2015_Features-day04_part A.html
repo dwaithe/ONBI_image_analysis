@@ -1,0 +1,89 @@
+
+<HTML>
+<head>
+<style>
+body {
+	margin:20;
+    font-family: Arial, Helvetica, sans-serif;
+}
+p.todo{color:DarkRed;}
+p{
+background:#FFFFFF;
+	
+	font-size:small;
+	
+	color:Navy;
+	width:80%;
+
+}
+h3{color:Navy;}
+h4{color:DarkRed;}
+code{
+color: DarkSlateGray;
+font-size:20;
+}
+ol {
+	background:#F8F8FF	  2.3em 0 repeat-y;
+	overflow:auto;
+	font-size:small;
+	margin:0;
+	padding:1em 0 1em 2.8em;
+	color:gray;
+	width:90%;
+}
+#content ol li {
+	
+	font-size:small;
+	color:gray;
+}
+#content ol code {color:#DCDCDC;font-size:medium;}
+</style>
+
+
+<script type="text/javascript">
+<!--
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+    }
+//-->
+</script>
+</head>
+<body>
+<p>Before getting started please make sure you do the following. <br>
+-	Open Fiji by typing &#39;Fiji&#39; into the terminal of the linux workstation. You can find the Terminal by searching for it or by the short-cut: &#39;Ctrl + Alt + T&#39;. <br>
+-	In Fiji goto Analyze->Set Measurements. Make sure at least Area, Mean Gray, value are checked.<br>
+-	In Fiji Image->Options->Color, please make sure that Foreground=Black, Background=White and Selection=Yellow.<br>
+- Goto the folder entitled: "day4_machineLearning" you will need the files in this folder.</p>
+</p>
+<h1 >Using Features to describe different aspects of your image</h1>
+<p> The goal of this practical is to apply different derivative filters to an image to examine how this emphasises different structures within the image.</p> 
+
+<p>1a) Using Fiji open the image entitled: 'organoid.tif'. An image-stack should load with three frames. Split this stack into individual images using the Image->Stacks->'Stack to Images' command.  We are going to work only on 'organoid-0001', close the other images. 
+
+<p>1b) First of all we want to visualise different edge filters. Goto Plugins->FeatureJ->Feature Derivatives. These filters smooth the image and emphasis areas where intensity is changeing within an image. Start by setting 'X-order differentiation' and selecting the value '1.0', press 'Ok'. A new image should appear. Notice how certain parts of the image are more prominent than others. This is a '1st' derivative edge filter and highlights the edges which are moving up-to-down in the image.</p>
+
+<p> 1c) Try the Feature Derivatives plugin on the original image, but this time set the 'X-order differentiation' back to zero and set the 'Y-order differention' to one.</p>
+
+<p> 1d) Experiment with some of the other filters in the Plugins->FeatureJ menu.</p>
+
+<p> 1e) Choose your favourite filter response and use a Lookup-Table (Image->Lookup-Table) to colour it nicely.</p>
+
+<p> When you perform machine learning for image segmentation an image is often described using many filters like the ones you have experimented with. Through using the pixel values in each filter output image, the machine learning algorithm is able to reproducibly classify the areas you are interested in, as long as you train it with some example data (You will do this later).</p>
+
+<p> In addition to different types of filter, the feature description process also involves different scales of filtering. This generally means that your image is blurred prior to applying another filter. This has the effect of merging or blurring smaller high frequency details together. This means when you filter your image you should draw out larger (or broader) structures giving a sense of scale.</p>
+
+<p> 1f) Try applying the 'X-order differentiation' filter again but with different smoothing. Make a small figure which has '1.0', '2.0', '4.0' and '8.0' smoothing on the same image. Pick a Lookup-Table which helps visualise the difference in the images. <p>
+
+<p>For more information: <br>
+1. Julesz B (1981) Textons, the elements of texture perception, and their interactions. Nature 290: 91–97.
+</p>
+
+<h4> END of exercise</h4>
+<p>(c) Dominic Waithe 2015. University of Oxford.</p>
+</body>
+</html>
+

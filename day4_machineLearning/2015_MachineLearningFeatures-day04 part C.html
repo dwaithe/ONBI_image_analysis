@@ -1,0 +1,127 @@
+ 
+<HTML>
+<head>
+<style>
+body {
+	margin:20;
+    font-family: Arial, Helvetica, sans-serif;
+}
+p.todo{color:DarkRed;}
+p{
+background:#FFFFFF;
+	
+	font-size:small;
+	
+	color:Navy;
+	width:80%;
+
+}
+h3{color:Navy;}
+h4{color:DarkRed;}
+code{
+color: DarkSlateGray;
+font-size:20;
+}
+ol {
+	background:#F8F8FF	  2.3em 0 repeat-y;
+	overflow:auto;
+	font-size:small;
+	margin:0;
+	padding:1em 0 1em 2.8em;
+	color:gray;
+	width:90%;
+}
+#content ol li {
+	
+	font-size:small;
+	color:gray;
+}
+#content ol code {color:#DCDCDC;font-size:medium;}
+</style>
+
+
+<script type="text/javascript">
+<!--
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+    }
+//-->
+</script>
+</head>
+<body>
+<p>Before getting started please make sure you do the following. <br>
+-	Open Fiji by typing &#39;Fiji&#39; into the terminal of the linux workstation. You can find the Terminal by searching for it or by the short-cut: &#39;Ctrl + Alt + T&#39;. <br>
+-	In Fiji goto Analyze->Set Measurements. Make sure at least Area, Mean Gray, value are checked.<br>
+-	In Fiji Image->Options->Color, please make sure that Foreground=Black, Background=White and Selection=Yellow.<br>
+- Goto the folder entitled: "day4_machineLearning" you will need the files in this folder.</p>
+</p>
+<h1 >Segmentation of cells from background.</h1>
+<p>The goal of this practical is to use an interactive Random Forest machine learning approach for segmenting cells from their background in wide-field images. Next in python you are going to classify which cell-type is which by performing clustering on the input data.</p>
+<h3 >Segmentation</h3>
+
+<p >1a) Using Fiji open the image file: 'wide-field-1.tiff'. You will find an image which has two channels. One fluorescent channel (green) and one bright-field image (grayscale). Both cells are visible in the grayscale image. The larger cells (dendritic cells) are expressing a protein, which is fluorescent in the green-range of the spectrum. The T-cells are smaller and are not expressing a protein meaning they can only be recognised in the bright-field channel.
+
+<p class="todo">Question) What wavelength was the green channel collected on. Hint: Meta-data.</p>
+
+<p>1b) If you change the hyperstack visualisation to be composite you can see which cells are which by whether they are positive for green or not Image->Color->Composite.</p>
+
+<p>1c) Split the bright-field image into independent channels Image->Color->Split Channels. Select the grayscale image containing bright-field image of the cells. Ignore the green channel for now. Open the Weka Segmentation software Plugins->Segmentation->Trainable Weka Segmentation.  We want to classify what is cell and what is background, don&#39;t worry about distinguishing the different cell types for now. Double click the Oval tool on the Fiji toolbar (2nd from left). Select Enable selection brush and set size to &#39;10&#39;. Within the Weka software paint a cell and then click add, paint another and click add, all to the same class. Once you have done about 20 (more if you like). Paint some of the background and add this to the 2nd class to represent background. </p>
+
+<img src="../web_imgs/mlfimg1.png" width=50%>
+
+<p> When you click &#39;Train&#39; you should have something like this:</p>
+<img src="../web_imgs/mlfimg2.png" width=50%>
+
+
+<p > 1d) It is important that the classification is accurate. If it is not accurate try and refine the annotation so it more closely fits the cells. Save the classifier, so you can evaluate other files later on. Click &#39;Get Probability&#39; to extract the probability representation. Close the Weka plugin.</p>
+
+<p class="todo"> Question) How could you potentially improve the quality of classification using the options available in this plugin? 
+</p>
+<p> 1e) Now we want to threshold our Probability map (the one where the cells are white) and leave the background image. Split the stack Images->Stacks>Stack to Images. The image is 32-bit which is a floating point format. Notice the pixels have decimal value when you put the cursor over them. In this mode you can&#39;t apply a conventional threshold so beforehand convert the image to 8-bit (Image->Type-8-bit). Apply a threshold to the image (try &#39;Moments&#39;).</p>
+
+<p class="todo">Why do you think the classifier exports images in a floating point format? How does a random forest classifier generate a probability? </p>
+
+<p> 1f) Now goto Process->Binary->Watershed. This is a crude method for splitting big blobs into smaller ones. Hopefully it will separate most blobs into cell-sized areas. We now want to add these to the ROI manager so we can measure each one independently. First of all make sure the ROI manager is empty, we don&#39;t want to add to any existing labels. Next, to add, goto Analyze->Analyze Particles. Make sure &#39;Add to Manager&#39; is checked and then click &#39;OK&#39;.</p>
+
+<p> 1g) After adding the cells to the ROI manager explore the different cells by click on the numbers (object instances) in the ROI manager (Analyze->Tools->ROI Manager) you should find that individual cells are illuminated.
+
+<p class="todo">Question) How many cells are there in your image?</p>
+
+<p class="todo">Question) If you get time try and evaluate a fresh image (e.g. 'wide-field-3.tif') with the same random forest classifier (which you saved). How did it go? If it didn&#39;t go well how might you improve this? How can you judge the performance of this?</p>
+
+<h3 >Clustering </h3>
+
+<p>2a)For one of your images, after adding the cells to the ROI manager explore the different cells by click on the numbers (object instances) in the ROI manager (Analyze->Tools->ROI Manager) you should find that individual cells are illuminated. Now click your green channel image. If you click on object instances now, you should see that specific ROI are highlighted in this image. We want to sample the green fluorescence in each cell. To do this, first make sure you right statistics are selected. To do this goto Analyze->Set Measurements and select 'Area', 'Mean gray value', and 'Centroid'. Highlight all the object Instances and then click &#39;Measure&#39;  button on the ROI Manager tool. A Results table should appear with stats for each of the cells. Click the Results table and click &#39;Save As&#39;. Save the table somewhere easy to find.</p>
+
+
+<p> 2b) The next section involves using Python. Open the ipython notebook contained within this folder.
+
+
+
+
+
+<!--
+<ol start="2">
+<li><code>close all;</code></li>
+</ol>
+<br>
+
+
+<h4>TO DO</h4>
+<p class="todo">Investigate the result of the following commands</p>
+<ol>
+<li><code> I = repmat(A,3,1)</code></li>
+<li><code> J = repmat(B,2,3)</code></li>
+</ol>
+-->
+
+
+<h4> END of exercise</h4>
+<p>(c) Dominic Waithe 2015. University of Oxford.</p>
+</body>
+</html>
+
