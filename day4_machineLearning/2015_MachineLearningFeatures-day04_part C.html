@@ -56,7 +56,7 @@ ol {
 <p>Before getting started please make sure you do the following. <br>
 -	Open Fiji by typing &#39;Fiji&#39; into the terminal of the linux workstation. You can find the Terminal by searching for it or by the short-cut: &#39;Ctrl + Alt + T&#39;. <br>
 -	In Fiji goto Analyze->Set Measurements. Make sure at least Area, Mean Gray, value are checked.<br>
--	In Fiji Image->Options->Color, please make sure that Foreground=Black, Background=White and Selection=Yellow.<br>
+-	In Fiji Edit->Options->Color, please make sure that Foreground=Black, Background=White and Selection=Yellow.<br>
 - Goto the folder entitled: "day4_machineLearning" you will need the files in this folder.</p>
 </p>
 <h1 >Segmentation of cells from background.</h1>
@@ -81,13 +81,13 @@ ol {
 
 <p class="todo"> Question) How could you potentially improve the quality of classification using the options available in this plugin? 
 </p>
-<p> 1e) Now we want to threshold our Probability map (the one where the cells are white) and leave the background image. Split the stack Images->Stacks>Stack to Images. The image is 32-bit which is a floating point format. Notice the pixels have decimal value when you put the cursor over them. In this mode you can&#39;t apply a conventional threshold so beforehand convert the image to 8-bit (Image->Type-8-bit). Apply a threshold to the image (try &#39;Moments&#39;).</p>
+<p> 1e) Now we want to threshold our Probability map (the one where the cells are white) and leave the background image. Split the stack Images->Stacks>Stack to Images. The image is 32-bit which is a floating point format. Notice the pixels have decimal value when you put the cursor over them. In this mode you can&#39;t apply a conventional threshold so beforehand convert the image to 8-bit (Image->Type-8-bit). Apply a threshold to the image,  Image->Adjust->Threshold (try selecting &#39;Moments&#39; in the list).</p>
 
 <p class="todo">Why do you think the classifier exports images in a floating point format? How does a random forest classifier generate a probability? </p>
 
 <p> 1f) Now goto Process->Binary->Watershed. This is a crude method for splitting big blobs into smaller ones. Hopefully it will separate most blobs into cell-sized areas. We now want to add these to the ROI manager so we can measure each one independently. First of all make sure the ROI manager is empty, we don&#39;t want to add to any existing labels. Next, to add, goto Analyze->Analyze Particles. Make sure &#39;Add to Manager&#39; is checked and then click &#39;OK&#39;.</p>
 
-<p> 1g) After adding the cells to the ROI manager explore the different cells by click on the numbers (object instances) in the ROI manager (Analyze->Tools->ROI Manager) you should find that individual cells are illuminated.
+<p> 1g) After adding the cells to the ROI manager explore the different cells by clicking on the numbers (object instances) in the ROI manager (Analyze->Tools->ROI Manager) you should find that individual cells are illuminated.
 
 <p class="todo">Question) How many cells are there in your image?</p>
 
@@ -95,7 +95,7 @@ ol {
 
 <h3 >Clustering </h3>
 
-<p>2a)For one of your images, after adding the cells to the ROI manager explore the different cells by click on the numbers (object instances) in the ROI manager (Analyze->Tools->ROI Manager) you should find that individual cells are illuminated. Now click your green channel image. If you click on object instances now, you should see that specific ROI are highlighted in this image. We want to sample the green fluorescence in each cell. To do this, first make sure you right statistics are selected. To do this goto Analyze->Set Measurements and select 'Area', 'Mean gray value', and 'Centroid'. Highlight all the object Instances and then click &#39;Measure&#39;  button on the ROI Manager tool. A Results table should appear with stats for each of the cells. Click the Results table and click &#39;Save As&#39;. Save the table somewhere easy to find.</p>
+<p>2a)For one of your images, after adding the cells to the ROI manager explore the different cells by click on the numbers (object instances) in the ROI manager (Analyze->Tools->ROI Manager) you should find that individual cells are illuminated. Now click your green channel image. If you click on object instances now, you should see that specific ROI are highlighted in this image. We want to sample the green fluorescence in each cell. To do this, first make sure the right statistics are selected. To do this goto Analyze->Set Measurements and select 'Area', 'Mean gray value', and 'Centroid'. Highlight all the object Instances and then click &#39;Measure&#39;  button on the ROI Manager tool. A Results table should appear with stats for each of the cells. Click the Results table and click &#39;Save As&#39;. Save the table somewhere easy to find.</p>
 
 
 <p> 2b) The next section involves using Python. Open the ipython notebook contained within this folder.

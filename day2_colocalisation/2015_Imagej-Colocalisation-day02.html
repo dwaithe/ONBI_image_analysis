@@ -55,37 +55,36 @@ ol {
 
 <p>Before getting started please make sure you do the following:<br />
 - Open Fiji by typing &#39;Fiji&#39; into the terminal of the linux workstation. You can find the Terminal by searching for it or by the short-cut: &#39;Ctrl + Alt + T&#39;<br />
-- Make sure you have cloned the repository with the image files. (e.g. using the terminal, navigate to a folder you can easily find, and then type: git clone https://github.com/dwaithe/ONBI_image_analysis. This will download the image files and exercises to a local folder). If you need to update the content of this folder please use 'git fetch'.<br>
 - If you see any typos or want to recommend any improvements please paste the error or write the idea to: <a href="mailto:dominic.waithe@imm.ox.ac.uk?Subject=Suggestion/Found an error.">dominic.waithe@imm.ox.ac.uk</a>
 <h3>Colocalisation A</h3>
 
-<p>4a) Open the image Healthy.lsm. Examine the image. You should notice that there are two channels. We want to establish the colocalisation between the two channels using the Pearson&#39;s correlation coefficient. To do this you will first have to split the channels: -&gt;Image-&gt;Color-&gt;Split Channels.</p>
+<p>1a) Open the image Healthy.lsm. Examine the image. You should notice that there are two channels. We want to establish the colocalisation between the two channels using the Pearson&#39;s correlation coefficient. To do this you will first have to split the channels: -&gt;Image-&gt;Color-&gt;Split Channels.</p>
 
 <p>Note(Green channel is filipin III (binds cholesterol) magenta is Lysotracker (as name implies stains lysosomes). Niemann Pick C is a disease where cholesterol trafficking to plasma membrane is impaired and it accumulates in lysosomes).</p>
 
 <p class="todo">Question) Inspect the images. From what you have learnt from the lecture on colocalisation what do you think makes this image less than ideal for Pearson&#39;s colocalisation analysis? Tip (try using the Hi-Lo look-up-table).</p>
 
-<p>4b) Goto Analyze-&gt;Colocalisation-&gt; Coloc 2 function. Add the two channels that you have just split, one from either channel, leave the &#39;ROI mask&#39; unselected for now. Run the colocalisation with all the parameters unchecked. Look for the output marked Pearson&#39;s R value (no threshold). What value do you get? Repeat this for the other image called Sick.lsm.</p>
+<p>1b) Goto Analyze-&gt;Colocalisation-&gt; Coloc 2 function. Add the two channels that you have just split, one from either channel, leave the &#39;ROI mask&#39; unselected for now. Run the colocalisation with all the parameters unchecked. Look for the output marked Pearson&#39;s R value (no threshold). What value do you get? Repeat this for the other image called Sick.lsm.</p>
 
 <p class="todo">Question) How do the R- values differ for these two images? Do you think you could use this result as a basis for distinguishing the visual phenotype of the two images?</p>
 
 <h3>Colocalisation B</h3>
 
-<p>4c) Open the image neuron.tif. We only want to work with the first and last channel. One way to separate them from the original image is to use image-&gt;Duplicate. Check the box marked &#39;Duplicate HyperStack&#39; but type &#39;1&#39; in the channels box rather than having &#39;1-4&#39;. Click &#39;ok&#39;. Repeat, but duplicate channel 4 instead. You should now have two images (one for each channel).</p>
+<p>1c) Open the image neuron.tif. We only want to work with the first and last channel. One way to separate them from the original image is to use image-&gt;Duplicate. Check the box marked &#39;Duplicate HyperStack&#39; but type &#39;1&#39; in the channels box rather than having &#39;1-4&#39;. Click &#39;ok&#39;. Repeat, but duplicate channel 4 instead. You should now have two images (one for each channel).</p>
 
-<p>4d) Goto Analyze-&gt;Colocalisation-&gt; Coloc 2 function. Click the first two slices that you created, one from either channel, leave the &#39;ROI mask&#39; unselected for now. Run the colocalisation with all the parameters checked. Look for the output marked Pearson&#39;s R-value (no threshold).</p>
+<p>1d) Goto Analyze-&gt;Colocalisation-&gt; Coloc 2 function. Click the first two slices that you created, one from either channel, leave the &#39;ROI mask&#39; unselected for now. Run the colocalisation with all the parameters checked. Look for the output marked Pearson&#39;s R-value (no threshold).</p>
 
 <p class="todo">Question) What value do you get?</p>
 
 <p>&nbsp;</p>
 
-<p>4e) This time repeat the exercise but with an oval selection surrounding only the fluorescent region of the cell with no minimal background. Next goto Edit-&gt;Selection- &gt;Create Mask. In the &#39;Coloc 2&#39; dialog box you will have to select under &#39;mask or ROI&#39; the newly created mask image entitled &#39;Mask&#39;. Run the &#39;Coloc 2&#39; plugin.</p>
+<p>1e) This time repeat the exercise but with an oval selection surrounding only the fluorescent region of the cell with no minimal background. Next goto Edit-&gt;Selection- &gt;Create Mask. In the &#39;Coloc 2&#39; dialog box you will have to select under &#39;mask or ROI&#39; the newly created mask image entitled &#39;Mask&#39;. Run the &#39;Coloc 2&#39; plugin.</p>
 
 <p class="todo">Question) What is the Pearson&#39;s R-value now?</p>
 
 <p class="todo">What is the effect of removing the background pixels on the R-value of the test and control condition? Why do you think this is the case.</p>
 
-<p>4f) Repeat the previous step but this time create a mask from one of the channels. To do this we are going to threshold the cyan channel. First, duplicate the cyan channel using Image-&gt;Duplicate. Then bring up the Image-&gt;Adjust-&gt;Threshold and click &#39;set&#39;. Type in &#39;5-255&#39;. This will create a binary image with pixels becoming either &#39;0&#39; or &#39;255&#39; based on whether there original intensity was above or below the value &#39;5&#39;. In the &#39;Coloc 2&#39; dialog box you will have to select under &#39;mask or ROI&#39; the newly created mask image entitled &#39;Mask&#39;. You may have to invert the threshold mask for it to work correctly Image-&gt;Invert. To establish what areas are being included in the colocalisation analysis make sure the &#39;Display Images in Results&#39; checkbox is positive. When you run the plugin you can view the included pixels by selecting either &#39;Channel 1&#39; or Channel 2&#39; from the drop-down box at the top of the output dialog.</p>
+<p>1f) Repeat the previous step but this time create a mask from one of the channels. To do this we are going to threshold the cyan channel. First, duplicate the cyan channel using Image-&gt;Duplicate command, as you do this rename the file by changeing the text 'neuron.tif' to 'mask' in the duplicate image dialog box.  Then bring up the thresholding dialog by Image-&gt;Adjust-&gt;Threshold and then click &#39;set&#39;. Type in &#39;5&#39; in the lower threshold box and &#39;255&#39; in the upper threshold box. Next, click 'ok', and then 'apply'. You will then produce a binary image of your thresholded image. The area within the cell should contain pixels of '255' and the are outside the cell should have pixel values of '0'.  You may have to invert the threshold mask for it to work correctly Edit-&gt;Invert. Also ensure that the Lookup-Table is not inverted. To correct this goto Image->Lookup-Tables->Invert. This can sometimes happen automatically depending on your Fiji settings.  In the &#39;Coloc 2&#39; dialog box you will have to select under &#39;mask or ROI&#39; the newly created mask image entitled &#39;mask&#39;. To establish what areas are being included in the colocalisation analysis make sure the &#39;Display Images in Results&#39; checkbox is positive. Once you have run the plugin, you can view the included pixels by selecting either &#39;Channel 1&#39; or Channel 2&#39; from the drop-down box at the top of the output dialog.</p>
 
 <p class="todo">Question) Does the colocalisation R-value change if you change the mask? What is the reason for this?</p>
 
